@@ -10,15 +10,16 @@ import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Circle;
+import javafx.scene.shape.Polygon;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.Shape;
 import javafx.stage.*;
 import org.slf4j.*;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.file.*;
+
+import java.io.*;
+import java.net.URL;
 import java.util.*;
+
 
 public class MyApplication extends Application {
     private final static Logger logger = LoggerFactory.getLogger(MyApplication.class);
@@ -26,7 +27,7 @@ public class MyApplication extends Application {
     public Button confirmButton, cancelButton, pushButton, freezeButton, safeButton;
     HBox box = new HBox(5);
     int turnCount;
-
+    String focusedChampion = null;
     int focus;
     @Override
     public void start(Stage primaryStage){
@@ -61,7 +62,8 @@ public class MyApplication extends Application {
         buttonBoxLogic();
         gameLogic(unitMove, unit, unitPane, threat, bgPane);
 
-        Scene scene = new Scene(pane);
+        Scene scene = new Scene(pane, 1000, 800);
+        scenePane.setMinSize(scene.getWidth(), scene.getHeight());
         primaryStage.setScene(scene);
         primaryStage.sizeToScene();
         primaryStage.show();
@@ -111,16 +113,40 @@ public class MyApplication extends Application {
         removeThis.setOnAction((ActionEvent) ->{
             select.setVisible(false);
             removeThis.setVisible(false);
+
         });
         championContainer.setContent(champVBOX);
-        select.getChildren().addAll(championPane, championContainer, removeThis);
+
+        select.getChildren().addAll(championPane, championContainer, removeThis, lockin(select, scenePane));
         return select;
     }
+
+    public Node lockin(Pane select, Pane scenePane){
+        Polygon lockin = new Polygon();
+        System.out.println(scenePane.getBoundsInParent().getWidth());
+        double x = scenePane.getBoundsInParent().getWidth();
+        double y = scenePane.getBoundsInParent().getHeight() * .9;
+        lockin.setLayoutX(x);
+        lockin.setLayoutX(y);
+        lockin.getPoints().addAll(new Double[]{
+                x, y,
+                x + 20, y - 10,
+                x + 120, y - 10,
+                x + 140, y,
+                x + 140, y + 40,
+                x + 120, y + 50,
+                x + 20, y + 50,
+                x, y + 40,
+
+        });
+        lockin.setFill(new Color(0.0, 1.0, 1.0, 1.0));
+        return lockin;
+    }
+
     public void champ(VBox champVBOX){
         int champAmt = 20;
         Double hbamt = Math.ceil(champAmt / 4);
         int hboxAmt = hbamt.intValue();
-
         HBox[] champions = new HBox[hboxAmt];
         Rectangle[] champIcon = new Rectangle[champAmt];
         for(int a = 0; a < hboxAmt; a++){
@@ -135,39 +161,38 @@ public class MyApplication extends Application {
             champIcon[i].setWidth(105.25);
             champIcon[i].setFill(new Color(1.0,0.0, 0.0, 1.0));
             Double assignedRow = Math.ceil(i / 4);
-            champIcon[i].setId("hi " + (i +1));
             champIcon[i].setOnMousePressed(event ->{
                 final Node source = (Node) event.getSource();
                 String id = source.getId();
                 System.out.println(id);
+                focusedChampion = id;
             });
             champions[assignedRow.intValue()].getChildren().add(champIcon[i]);
         }
         champPortrait(champIcon);
     }
     public void champPortrait(Rectangle[] champIcon) {
-        List<String> results = new ArrayList<String>();
-        Path dir = Path.of("build/resources/main/champions");
-        try (DirectoryStream<Path> stream = Files.newDirectoryStream(dir)){
-            for (Path file: stream) {
-                System.out.println(file.getFileName());
-                results.add(String.valueOf(file.getFileName()));
-            }
-        } catch (IOException | DirectoryIteratorException x) {
-            System.err.println(x);
-            logger.debug("error");
+        List<Image> results = new ArrayList<>();
+        List<String> resultNames = new ArrayList<String>();
+        String imageBase = "/champions/";
+        try {
+            BufferedReader br = new BufferedReader(new InputStreamReader(getClass().getResourceAsStream("/champions/champions_list.txt")));
+            br.lines().forEach(imageName -> {
+                URL imageURL = getClass().getResource(imageBase + imageName);
+                Image image = new Image(imageURL.toExternalForm());
+                results.add(image);
+                resultNames.add(imageName);
+            });
+        } catch (Exception exc) {
+            exc.printStackTrace();
         }
-
-//        File[] count = folder.listFiles();
-//        for (int i = 0; i < count.length; i++){
-//            results.add(count[i].getName());
-//        }
-        Collections.sort(results);
         for (int a = 0; a < results.size(); a++){
-            InputStream portrait = MyApplication.class.getResourceAsStream("/champions/" + results.get(a));
-            champIcon[a].setFill(new ImagePattern(new Image(portrait)));
+            champIcon[a].setFill(new ImagePattern(results.get(a)));
+            String id = resultNames.get(a).replace(".png", "");
+            champIcon[a].setId(id);
         }
     }
+
     public Node buttonBox(){
         confirmButton = new Button("Confirm");
         cancelButton = new Button("Cancel");
