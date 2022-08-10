@@ -13,16 +13,15 @@ import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.Shape;
 import javafx.stage.*;
-//import org.slf4j.*;
+import org.slf4j.*;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URI;
 import java.nio.file.*;
 import java.util.*;
 
 public class MyApplication extends Application {
-    //private final static Logger logger = LoggerFactory.getLogger(MyApplication.class);
+    private final static Logger logger = LoggerFactory.getLogger(MyApplication.class);
 
     public Button confirmButton, cancelButton, pushButton, freezeButton, safeButton;
     HBox box = new HBox(5);
@@ -146,19 +145,18 @@ public class MyApplication extends Application {
         }
         champPortrait(champIcon);
     }
-    public void champPortrait(Rectangle[] champIcon){
+    public void champPortrait(Rectangle[] champIcon) {
         List<String> results = new ArrayList<String>();
-        Path path = Paths.get(URI.create("jrt:/app/champions"));
-        try (DirectoryStream<Path> stream = Files.newDirectoryStream(path)){
+        Path dir = Path.of("build/resources/main/champions");
+        try (DirectoryStream<Path> stream = Files.newDirectoryStream(dir)){
             for (Path file: stream) {
                 System.out.println(file.getFileName());
                 results.add(String.valueOf(file.getFileName()));
             }
         } catch (IOException | DirectoryIteratorException x) {
             System.err.println(x);
+            logger.debug("error");
         }
-
-
 
 //        File[] count = folder.listFiles();
 //        for (int i = 0; i < count.length; i++){
