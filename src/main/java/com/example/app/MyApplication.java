@@ -29,6 +29,9 @@ public class MyApplication extends Application {
     int turnCount;
     String focusedChampion = null;
     int focus;
+    // 1280/720  1920/1080
+    double screenx = 1920;
+    double screeny = 1080;
     @Override
     public void start(Stage primaryStage){
         Circle[] unitMove = new Circle[]{
@@ -56,31 +59,25 @@ public class MyApplication extends Application {
         Pane pane = new Pane();
         Pane scenePane = new Pane();
         ImageView bgPane = new ImageView();
+
+        Scene scene = new Scene(pane, screenx, screeny);
+        System.out.println(scene.getWidth() + " " + scene.getHeight());
+        scenePane.setMinSize(scene.getWidth(), scene.getHeight());
         scenePane.getChildren().addAll(createBackGround(bgPane), unitDraw(unit, unitMove, unitPane, threat));
-        pane.getChildren().addAll(scenePane, buttonBox(), champSelect(scenePane));
+        pane.getChildren().addAll(scenePane, buttonBox(), champSelect());
+        pane.setMinSize(screenx, screeny);
 
         buttonBoxLogic();
         gameLogic(unitMove, unit, unitPane, threat, bgPane);
-
-        Scene scene = new Scene(pane, 1000, 800);
-        scenePane.setMinSize(scene.getWidth(), scene.getHeight());
         primaryStage.setScene(scene);
         primaryStage.sizeToScene();
         primaryStage.show();
     }
-    public Node champSelect(Pane scenePane){
+    public Node champSelect(){
         Pane select = new Pane();
-        select.setMinWidth(scenePane.getBoundsInParent().getWidth());
-        select.setMinHeight(scenePane.getBoundsInParent().getHeight());
+        select.setMinWidth(screenx);
+        select.setMinHeight(screeny);
         select.setBackground(new Background(new BackgroundFill(Color.BLACK, null, null)));
-
-        Rectangle championPane = new Rectangle();
-        championPane.setLayoutX(scenePane.getBoundsInParent().getWidth() * .2);
-        championPane.setLayoutY(15);
-        championPane.setHeight(scenePane.getBoundsInParent().getHeight() * .85);
-        championPane.setWidth(scenePane.getBoundsInParent().getWidth() * .585);
-        championPane.setFill(new Color(1.0, 1.0, 1.0 ,1.0));
-
         Circle[] championCircle = new Circle[]{
                 new Circle(),
                 new Circle(),
@@ -88,26 +85,48 @@ public class MyApplication extends Application {
                 new Circle(),
                 new Circle(),
         };
-        int champPos = 60;
-        for (Circle circle : championCircle){
-            select.getChildren().add(circle);
-            circle.setFill(new Color(1.0, 1.0, 1.0, 1.0));
-            circle.setLayoutX(60);
-            circle.setLayoutY(champPos);
-            circle.setRadius(45.0);
-            champPos = champPos + 100;
-        }
-        ScrollPane championContainer = new ScrollPane();
-        VBox champVBOX = new VBox();
-        champVBOX.setLayoutX(scenePane.getBoundsInParent().getWidth() * .2);
-        champVBOX.setLayoutY(15);
-        champVBOX.setMinSize((scenePane.getBoundsInParent().getWidth() * .5), scenePane.getBoundsInParent().getHeight() * .85);
-        championContainer.setLayoutY(15);
-        championContainer.setLayoutX(scenePane.getBoundsInParent().getWidth() * .2);
-        championContainer.setMinWidth((scenePane.getBoundsInParent().getWidth() * .585));
-        championContainer.setMaxSize((scenePane.getBoundsInParent().getWidth() * 2), scenePane.getBoundsInParent().getHeight() * .85);
+        VBox circleHBox = new VBox();
 
-        champ(champVBOX);
+        Rectangle slot = new Rectangle();
+        slot.setHeight(screeny * .188);
+        slot.setWidth(screenx * .2);
+        slot.setLayoutX(screenx * .04);
+        slot.setLayoutY(screeny * .02);
+        slot.setFill(new Color(0.0,0.0,1.0, 0.5));
+
+        select.getChildren().addAll(slot, circleHBox);
+        circleHBox.setLayoutX(screenx * .05);
+        circleHBox.setLayoutY(screeny * .025);
+        circleHBox.setSpacing(10);
+        int increment = 0;
+        for (Circle circle : championCircle){
+            circleHBox.getChildren().add(circle);
+            circle.setFill(new Color(1.0, 1.0, 1.0, 1.0));
+            increment++;
+            circle.setRadius(screenx * .05);
+            circle.setId(String.valueOf(increment));
+            circle.setOnMousePressed(event ->{
+                final Node source = (Node) event.getSource();
+                String id = source.getId();
+                System.out.println(id);
+            });
+        }
+
+
+        ScrollPane championContainer = new ScrollPane();
+        championContainer.setStyle("-fx-background: #ffffff;");
+        VBox champVBOX = new VBox();
+        champVBOX.setMinSize((screenx * .592), screeny * .85);
+        champVBOX.setLayoutX((screenx - champVBOX.getWidth()) / 2);
+        champVBOX.setLayoutY(screeny * .02);
+        championContainer.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
+        championContainer.setLayoutY(screeny * .02);
+        championContainer.setLayoutX(screenx * .2);
+        //championContainer.setMinWidth((screenx * .585));
+        championContainer.setMinSize((screenx * .6), screeny * .85);
+        championContainer.setMaxHeight(screeny * .85);
+
+
 
         Button removeThis = new Button();
         removeThis.setOnAction((ActionEvent) ->{
@@ -117,33 +136,31 @@ public class MyApplication extends Application {
         });
         championContainer.setContent(champVBOX);
 
-        select.getChildren().addAll(championPane, championContainer, removeThis, lockin(select, scenePane));
+
+        Polygon lockin = new Polygon();
+        lockin.getPoints().addAll(new Double[]{
+                0.0, 0.0,
+                20.0, -10.0,
+                120.0, -10.0,
+                140.0, 0.0,
+                140.0, 40.0,
+                120.0, 50.0,
+                20.0, 50.0,
+                0.0, 40.0,
+        });
+        lockin.setLayoutX((screenx - lockin.getLayoutBounds().getWidth()) / 2);
+        lockin.setLayoutY(screeny * .85);
+        lockin.setScaleX(screenx * .0015);
+        lockin.setScaleY(screenx * .0015);
+        lockin.setFill(new Color(0.0, 1.0, 1.0, 1.0));
+
+        select.getChildren().addAll(championContainer, removeThis, lockin);
+        champ(champVBOX, championContainer);
+
         return select;
     }
 
-    public Node lockin(Pane select, Pane scenePane){
-        Polygon lockin = new Polygon();
-        System.out.println(scenePane.getBoundsInParent().getWidth());
-        double x = scenePane.getBoundsInParent().getWidth();
-        double y = scenePane.getBoundsInParent().getHeight() * .9;
-        lockin.setLayoutX(x);
-        lockin.setLayoutX(y);
-        lockin.getPoints().addAll(new Double[]{
-                x, y,
-                x + 20, y - 10,
-                x + 120, y - 10,
-                x + 140, y,
-                x + 140, y + 40,
-                x + 120, y + 50,
-                x + 20, y + 50,
-                x, y + 40,
-
-        });
-        lockin.setFill(new Color(0.0, 1.0, 1.0, 1.0));
-        return lockin;
-    }
-
-    public void champ(VBox champVBOX){
+    public void champ(VBox champVBOX, ScrollPane championContainer){
         int champAmt = 20;
         Double hbamt = Math.ceil(champAmt / 4);
         int hboxAmt = hbamt.intValue();
@@ -157,8 +174,9 @@ public class MyApplication extends Application {
         }
         for (int i = 0; i < champAmt; i++){
             champIcon[i] = new Rectangle();
-            champIcon[i].setHeight(105.25);
-            champIcon[i].setWidth(105.25);
+
+            champIcon[i].setHeight(((screenx * .6) - 56) /4);
+            champIcon[i].setWidth(((screenx * .6) - 56) /4);
             champIcon[i].setFill(new Color(1.0,0.0, 0.0, 1.0));
             Double assignedRow = Math.ceil(i / 4);
             champIcon[i].setOnMousePressed(event ->{
@@ -168,6 +186,10 @@ public class MyApplication extends Application {
                 focusedChampion = id;
             });
             champions[assignedRow.intValue()].getChildren().add(champIcon[i]);
+        }
+        for(HBox hbox : champions){
+            hbox.setMinWidth(screenx * .5);
+            hbox.setMaxWidth(screenx * .5);
         }
         champPortrait(champIcon);
     }
