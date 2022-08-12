@@ -114,9 +114,6 @@ public class ChampSelectScreen {
             });
             champions[assignedRow].getChildren().add(champIcon[i]);
         }
-        for (HBox hbox : champions){
-            System.out.println("1");
-        }
 
         for(HBox hbox : champions){
             hbox.setMinWidth(screenx * .5);
