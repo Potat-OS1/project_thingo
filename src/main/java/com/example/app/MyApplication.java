@@ -14,11 +14,10 @@ public class MyApplication extends Application {
 
     public Button confirmButton, cancelButton, pushButton, freezeButton, safeButton;
     HBox box = new HBox(5);
-
     int focus;
     // 1280/720  1920/1080
-    double screenx = 1920;
-    double screeny = 1080;
+    double screenx = 1280;
+    double screeny = 720;
     @Override
     public void start(Stage primaryStage){
         Pane pane = new Pane();

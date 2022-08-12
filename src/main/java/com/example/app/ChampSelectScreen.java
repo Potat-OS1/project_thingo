@@ -36,7 +36,7 @@ public class ChampSelectScreen {
         select.getChildren().addAll(selectedSlot(screenx, screeny), lockedIn(screenx, screeny), container(screenx, screeny), removeThis, lockin(screenx, screeny));
 
         //toggle for when im working on the game and not champ select.
-        select.setVisible(false);
+        select.setVisible(true);
 
         return select;
     }
@@ -88,9 +88,9 @@ public class ChampSelectScreen {
     }
 
     public void champ(VBox champVBOX, double screenx){
-        int champAmt = 20;
-        //Double hbamt = Math.ceil(champAmt / 4);
-        int hboxAmt = (int) Math.ceil(champAmt / 4);
+        int champAmt = 10;
+        double champDouble = (champAmt / 4.0);
+        int hboxAmt = (int)Math.ceil(champDouble);
         HBox[] champions = new HBox[hboxAmt];
         Rectangle[] champIcon = new Rectangle[champAmt];
 
@@ -100,21 +100,24 @@ public class ChampSelectScreen {
             champions[a].setSpacing(10.0);
             champVBOX.getChildren().add(champions[a]);
         }
-
+//
         for (int i = 0; i < champAmt; i++){
             champIcon[i] = new Rectangle();
             champIcon[i].setHeight(((screenx * .6) - 56) /4);
             champIcon[i].setWidth(((screenx * .6) - 56) /4);
             champIcon[i].setFill(new Color(1.0,0.0, 0.0, 1.0));
-            Double assignedRow = Math.ceil(i / 4);
+            int assignedRow = (int) Math.ceil(i / 4);
             champIcon[i].setOnMousePressed(event ->{
                 final Node source = (Node) event.getSource();
                 String id = source.getId();
-                System.out.println(id);
                 focusedChampion = id;
             });
-            champions[assignedRow.intValue()].getChildren().add(champIcon[i]);
+            champions[assignedRow].getChildren().add(champIcon[i]);
         }
+        for (HBox hbox : champions){
+            System.out.println("1");
+        }
+
         for(HBox hbox : champions){
             hbox.setMinWidth(screenx * .5);
             hbox.setMaxWidth(screenx * .5);
@@ -170,10 +173,10 @@ public class ChampSelectScreen {
         } catch (Exception exc) {
             exc.printStackTrace();
         }
-        for (int a = 0; a < results.size(); a++){
-            champIcon[a].setFill(new ImagePattern(results.get(a)));
-            String id = resultNames.get(a).replace(".png", "");
-            champIcon[a].setId(id);
-        }
+//        for (int a = 0; a < results.size(); a++){
+//            champIcon[a].setFill(new ImagePattern(results.get(a)));
+//            String id = resultNames.get(a).replace(".png", "");
+//            champIcon[a].setId(id);
+//        }
     }
 }
