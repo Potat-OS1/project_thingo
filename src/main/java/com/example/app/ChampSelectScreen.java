@@ -173,10 +173,10 @@ public class ChampSelectScreen {
         } catch (Exception exc) {
             exc.printStackTrace();
         }
-//        for (int a = 0; a < results.size(); a++){
-//            champIcon[a].setFill(new ImagePattern(results.get(a)));
-//            String id = resultNames.get(a).replace(".png", "");
-//            champIcon[a].setId(id);
-//        }
+        for (int a = 0; a < results.size(); a++){
+            champIcon[a].setFill(new ImagePattern(results.get(a)));
+            String id = resultNames.get(a).replace(".png", "");
+            champIcon[a].setId(id);
+        }
     }
 }
