@@ -16,16 +16,15 @@ public class MyApplication extends Application {
     HBox box = new HBox(5);
     int focus;
     // 1280/720  1920/1080
-    double screenx = 1280;
-    double screeny = 720;
+    double screenx = 1920;
+    double screeny = 1080;
     @Override
     public void start(Stage primaryStage){
         Pane pane = new Pane();
         Scene scene = new Scene(pane, screenx, screeny);
 
         ChampSelectScreen run = new ChampSelectScreen();
-        InGameScreen run2 = new InGameScreen();
-        pane.getChildren().addAll(run2.GameScreen(screenx, screeny), buttonBox(), run.champSelect(screenx, screeny));
+        pane.getChildren().addAll(buttonBox(), run.champSelect(screenx, screeny, pane));
         pane.setMinSize(screenx, screeny);
 
         buttonBoxLogic();

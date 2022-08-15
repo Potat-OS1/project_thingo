@@ -20,7 +20,15 @@ import java.util.List;
 
 public class ChampSelectScreen {
     String focusedChampion = null;
-    public Node champSelect(double screenx, double screeny){
+    int currentSlot = 0;
+    int champAmt = 10;
+    Rectangle[] champIcon = new Rectangle[champAmt];
+    List<String> resultNames = new ArrayList<String>();
+    List<Image> results = new ArrayList<>();
+    Circle[] championCircle = new Circle[5];
+    Rectangle slot = new Rectangle();
+    int increment = 1;
+    public Node champSelect(double screenx, double screeny, Pane pane){
         Pane select = new Pane();
         select.setMinWidth(screenx);
         select.setMinHeight(screeny);
@@ -33,7 +41,7 @@ public class ChampSelectScreen {
 
         });
 
-        select.getChildren().addAll(selectedSlot(screenx, screeny), lockedIn(screenx, screeny), container(screenx, screeny), removeThis, lockin(screenx, screeny));
+        select.getChildren().addAll(selectedSlot(screenx, screeny), lockedIn(screenx, screeny), container(screenx, screeny), removeThis, lockin(screenx, screeny, pane));
 
         //toggle for when im working on the game and not champ select.
         select.setVisible(true);
@@ -41,18 +49,13 @@ public class ChampSelectScreen {
         return select;
     }
     public Node lockedIn(double screenx, double screeny){
-        Circle[] championCircle = new Circle[]{
-                new Circle(),
-                new Circle(),
-                new Circle(),
-                new Circle(),
-                new Circle(),
-        };
         VBox circleHBox = new VBox();
         circleHBox.setLayoutX(screenx * .05);
         circleHBox.setLayoutY(screeny * .025);
         circleHBox.setSpacing(10);
-
+        for (int i = 0; i < 5; i++){
+            championCircle[i] = new Circle();
+        }
         int increment = 0;
         for (Circle circle : championCircle){
             circleHBox.getChildren().add(circle);
@@ -83,17 +86,12 @@ public class ChampSelectScreen {
         championContainer.setContent(champVBOX);
         //content of container
         champ(champVBOX, screenx);
-
         return championContainer;
     }
-
     public void champ(VBox champVBOX, double screenx){
-        int champAmt = 10;
         double champDouble = (champAmt / 4.0);
         int hboxAmt = (int)Math.ceil(champDouble);
         HBox[] champions = new HBox[hboxAmt];
-        Rectangle[] champIcon = new Rectangle[champAmt];
-
         for(int a = 0; a < hboxAmt; a++){
             champions[a] = new HBox();
             champions[a].setPadding(new Insets(5.0, 5.0, 5.0,5.0));
@@ -111,6 +109,7 @@ public class ChampSelectScreen {
                 final Node source = (Node) event.getSource();
                 String id = source.getId();
                 focusedChampion = id;
+                championCircle[currentSlot].setFill(new ImagePattern(results.get(resultNames.indexOf(focusedChampion + ".png"))));
             });
             champions[assignedRow].getChildren().add(champIcon[i]);
         }
@@ -123,7 +122,6 @@ public class ChampSelectScreen {
     }
 
     public Node selectedSlot(double screenx, double screeny){
-        Rectangle slot = new Rectangle();
         slot.setHeight(screeny * .188);
         slot.setWidth(screenx * .2);
         slot.setLayoutX(screenx * .04);
@@ -133,7 +131,7 @@ public class ChampSelectScreen {
         return slot;
     }
 
-    public Node lockin(double screenx, double screeny){
+    public Node lockin(double screenx, double screeny, Pane pane){
         Polygon lockin = new Polygon();
         lockin.getPoints().addAll(new Double[]{
                 0.0, 0.0,
@@ -151,13 +149,29 @@ public class ChampSelectScreen {
         lockin.setScaleY(screenx * .0015);
         lockin.setFill(new Color(0.0, 1.0, 1.0, 1.0));
 
+        lockin.setOnMousePressed(event ->{
+            if (currentSlot < 5 && focusedChampion != null){
+                championCircle[currentSlot].setId(focusedChampion);
+                focusedChampion = null;
+                if (currentSlot >= 4){
+                    slot.setVisible(false);
+                    InGameScreen initGameScreen = new InGameScreen();
+                    pane.getChildren().add(initGameScreen.GameScreen(screenx, screeny, championCircle, results, resultNames));
+                    //aaaa.unit[0].setFill(new Color(1.0, 1.0, 1.0, 1.0));
+                }
+                else{
+                    slot.setLayoutY(championCircle[currentSlot+1].getLayoutY() - (slot.getWidth() /5.25));
+                }
+                currentSlot++;
+                increment++;
+            }
+        });
         return lockin;
     }
 
     public void champPortrait(Rectangle[] champIcon) {
         //this code reads the champions_list.txt and applies the names to each of the icons ID.
-        List<Image> results = new ArrayList<>();
-        List<String> resultNames = new ArrayList<String>();
+
         String imageBase = "/champions/";
         try {
             BufferedReader br = new BufferedReader(new InputStreamReader(getClass().getResourceAsStream("/champions/champions_list.txt")));

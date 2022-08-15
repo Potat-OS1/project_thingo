@@ -20,65 +20,33 @@ import java.util.Objects;
 
 public class InGameScreen {
     int turnCount;
-    public Node GameScreen(double screenx, double screeny){
+    int teamSize = 5;
+    public Circle[] unit = new Circle[teamSize];
+    Circle[] unitMove = new Circle[teamSize];
+    Circle[] threat = new Circle[teamSize];
+    public Node GameScreen(double screenx, double screeny, Circle[] championCircle, List<Image> results, List<String> resultNames){
         Pane gameScreen = new Pane();
 
-        int teamSize = 5;
-        Circle[] unit = new Circle[teamSize];
-        Circle[] unitMove = new Circle[teamSize];
-        Circle[] threat = new Circle[teamSize];
         for (int i = 0; i < teamSize; i++){
             unit[i] = new Circle();
-        }
-        for (int i = 0; i < teamSize; i++){
             unitMove[i] = new Circle();
-        }
-        for (int i = 0; i < teamSize; i++){
             threat[i] = new Circle();
         }
-        gameScreen.getChildren().addAll(createBackGround(screenx, screeny), unitDraw(unitMove, unit, threat), EndTurn(unitMove, unit, screenx));
+        gameScreen.getChildren().addAll(createBackGround(screenx, screeny), unitDraw(screeny, screenx, championCircle, results, resultNames), EndTurn(screenx));
         gameScreen.setMinSize(screenx, screeny);
         return gameScreen;
     }
 
-    public Node unitDraw(Circle[] unitMove, Circle[] unit, Circle[] threat){
+    public Node unitDraw(double screeny, double screenx, Circle[] championCircle, List<Image> results, List<String> resultNames){
         Pane unitPane = new Pane();
-
-        List<String> champList = Arrays.asList("Totally not Darius", "Totally not Ornn", "Totally not Ashe", "Totally not Talon", "Totally not Soraka");
-        List<Integer> selectedChamp = Arrays.asList(0, 1, 2, 4, 3);
-        List<Double> champThreat = Arrays.asList(20.0, 20.0, 40.0, 25.0, 35.0);
-        List<Double> champMove = Arrays.asList(50.0, 40.0, 35.0, 50.0, 35.0);
-        List<Double> xCoord = Arrays.asList(200.0, 300.0, 400.0, 450.0, 490.0);
-        List<Double> yCoord = Arrays.asList(200.0, 300.0, 400.0, 450.0, 470.0);
-        for (int i = 0; i < unit.length; i++){
-            unit[i].setId(champList.get(selectedChamp.get(i)));
-            unit[i].setCenterX(xCoord.get(i));
-            unit[i].setCenterY(yCoord.get(i));
-            unit[i].setFill(new Color(0,0,1.0, 1.0));
-            unit[i].setRadius(8.0);
-
-            unitMove[i].setId(champList.get(selectedChamp.get(i)) + "'s Movement Range");
-            unitMove[i].setRadius(champMove.get(i));
-            unitMove[i].setCenterX(xCoord.get(i));
-            unitMove[i].setCenterY(yCoord.get(i));
-            unitMove[i].setStroke(new Color(1.0, 0,1.0, 1));
-            unitMove[i].setStrokeWidth(3.0);
-            unitMove[i].setFill(Color.TRANSPARENT);
-            unitMove[i].setVisible(false);
-
-            threat[i].setRadius(champThreat.get(i));
-            threat[i].setCenterX(xCoord.get(i));
-            threat[i].setCenterY(yCoord.get(i));
-            threat[i].setFill(new Color(1.0, 0.0 ,0.5, .25));
-            threat[i].setVisible(false);
-            unitPane.getChildren().addAll(threat[i], unitMove[i], unit[i]);
-        }
-        buttonLogic(unitMove, unit, threat);
+        ChampionAssign assign = new ChampionAssign();
+        assign.BaseStatAssign(unit, unitMove, threat, unitPane, screeny, screenx, championCircle, results, resultNames);
+        buttonLogic();
 
         return unitPane;
     }
 
-    public void buttonLogic(Circle[] unitMove, Circle[] unit, Circle[] threat){
+    public void buttonLogic(){
         for (int d = 0; d < unit.length; d++){
             unit[d].setOnMousePressed(event ->{
                 Node source = (Node) event.getSource();
@@ -108,8 +76,10 @@ public class InGameScreen {
             });
         }
     }
-
-    private Node EndTurn(Circle[] unitMove, Circle[] unit, double screenx){
+    public void aaaaa(){
+        this.unit[0].setFill(new Color(1.0, 1.0, 1.0, 1.0));
+    }
+    private Node EndTurn(double screenx){
 
         Button endTurn = new Button("End Turn");
         Label tCount = new Label("Turn: " + turnCount);
@@ -125,7 +95,7 @@ public class InGameScreen {
 
         VBox endBtnBox = new VBox();
 
-        endBtnBox.getChildren().addAll(endTurn, tCount, detectionButton(unitMove, unit));
+        endBtnBox.getChildren().addAll(endTurn, tCount, detectionButton());
         endBtnBox.setMinWidth(65.0);
         tCount.setAlignment(Pos.CENTER);
         tCount.setMaxWidth(Double.MAX_VALUE);
@@ -134,13 +104,17 @@ public class InGameScreen {
         return endBtnBox;
     }
 
-    public Node detectionButton(Circle[] unitMove, Circle[] unit){
+    public Node detectionButton(){
         Button detection = new Button("detect");
         detection.setOnAction(event -> {
             for (int a = 0; a < unit.length; a++){
-                Shape u1Intersect = Shape.intersect(unitMove[0], unit[a]);
+                Shape u1Intersect = Shape.intersect(threat[0], unit[a]);
                 if (u1Intersect.getBoundsInLocal().getWidth() != -1 && unit[a] != unit[0]){
                     System.out.println("Hi " + unit[a].getId() + " in " + unit[0].getId() +  "'s range");
+                }
+                Shape u2Intersect = Shape.intersect(threat[1], unit[a]);
+                if (u2Intersect.getBoundsInLocal().getWidth() != -1 && unit[a] != unit[1]){
+                    System.out.println("Hi " + unit[a].getId() + " in " + unit[1].getId() +  "'s range");
                 }
             }
         });
