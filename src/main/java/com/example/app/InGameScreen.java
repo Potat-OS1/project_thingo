@@ -14,7 +14,6 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.Shape;
 
 import java.io.InputStream;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
@@ -26,13 +25,16 @@ public class InGameScreen {
     Circle[] threat = new Circle[teamSize];
     public Node GameScreen(double screenx, double screeny, Circle[] championCircle, List<Image> results, List<String> resultNames){
         Pane gameScreen = new Pane();
-
+        Structures structures = new Structures();
         for (int i = 0; i < teamSize; i++){
             unit[i] = new Circle();
             unitMove[i] = new Circle();
             threat[i] = new Circle();
         }
-        gameScreen.getChildren().addAll(createBackGround(screenx, screeny), unitDraw(screeny, screenx, championCircle, results, resultNames), EndTurn(screenx));
+        gameScreen.getChildren().addAll(createBackGround(screenx, screeny),
+                structures.createStructures(screenx, screeny),
+                unitDraw(screeny, screenx, championCircle, results, resultNames),
+                EndTurn(screenx));
         gameScreen.setMinSize(screenx, screeny);
         return gameScreen;
     }
@@ -76,9 +78,7 @@ public class InGameScreen {
             });
         }
     }
-    public void aaaaa(){
-        this.unit[0].setFill(new Color(1.0, 1.0, 1.0, 1.0));
-    }
+
     private Node EndTurn(double screenx){
 
         Button endTurn = new Button("End Turn");

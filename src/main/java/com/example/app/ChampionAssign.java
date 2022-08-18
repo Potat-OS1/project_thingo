@@ -13,7 +13,7 @@ import java.util.List;
 
 public class ChampionAssign {
     public void BaseStatAssign(Circle[] unit, Circle[] unitMove, Circle[] threat, Pane unitPane, Double screeny, Double screenx, Circle[] champCircle, List<Image> results, List<String> resultNames){
-        List<String> champList = Arrays.asList((champCircle[0].getId() + " 1"), champCircle[1].getId(), champCircle[2].getId(), champCircle[3].getId(), champCircle[4].getId());
+        List<String> champList = Arrays.asList((champCircle[0].getId() + " unit 1"), (champCircle[1].getId() + " unit 2"), (champCircle[2].getId() + " unit 3"), (champCircle[3].getId() + " unit 4"), (champCircle[4].getId() + " unit 5"));
         List<Integer> selectedChamp = Arrays.asList(0, 1, 2, 3, 4);
         List<Double> champThreat = Arrays.asList(0.0, 0.0, 0.0, 0.0, 0.0);
         List<Double> champMove = Arrays.asList(0.0, 0.0, 0.0, 0.0, 0.0);

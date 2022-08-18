@@ -24,45 +24,11 @@ public class MyApplication extends Application {
         Scene scene = new Scene(pane, screenx, screeny);
 
         ChampSelectScreen run = new ChampSelectScreen();
-        pane.getChildren().addAll(buttonBox(), run.champSelect(screenx, screeny, pane));
+        pane.getChildren().add(run.champSelect(screenx, screeny, pane));
         pane.setMinSize(screenx, screeny);
-
-        buttonBoxLogic();
-
         primaryStage.setScene(scene);
         primaryStage.sizeToScene();
         primaryStage.show();
-    }
-
-    public Node buttonBox(){
-        confirmButton = new Button("Confirm");
-        cancelButton = new Button("Cancel");
-        pushButton = new Button("Push Lane");
-        freezeButton = new Button("Freeze Lane");
-        safeButton = new Button("Play Safe");
-
-        box.setPadding(new Insets(3, 3, 3, 3));
-        box.getChildren().addAll(confirmButton, cancelButton, pushButton, freezeButton, safeButton);
-        box.setAlignment(Pos.CENTER_LEFT);
-        box.setBackground(new Background(new BackgroundFill(Color.BLUEVIOLET, null, null)));
-        box.setVisible(false);
-        return box;
-    }
-
-    private void buttonBoxLogic(){
-        if (focus == 1){
-            confirmButton.setOnAction((ActionEvent) ->{
-            });
-            cancelButton.setOnAction((ActionEvent) -> box.setVisible(false));
-            pushButton.setOnAction((ActionEvent) ->{
-            });
-            freezeButton.setOnAction((ActionEvent) ->{
-            });
-            safeButton.setOnAction((ActionEvent) ->{
-
-            });
-        }
-
     }
 
     public static void main(String[] args) {
