@@ -21,7 +21,21 @@ public class Structures {
         Pane turretPane = new Pane();
         for (int b = 0; b < turretAmt; b++) {
             turret[b] = new Rectangle((screenx * 0.01), (screeny * 0.025));
-            turret[b].setFill(new Color(1.0, 1.0, 1.0, 1.0));
+            turret[b].setFill(new Color(0.0, 0.6, 0.6, 1.0));
+
+            if (b < 4){
+                turret[b].setId("Nexus Turret");
+            }
+            if (4 <= b && b < 10){
+                turret[b].setId("Inhibitor Turret");
+            }
+            if (10 <= b && b < 16){
+                turret[b].setId("Tier 2 Turret");
+            }
+            if (16 <= b && b < 22){
+                turret[b].setId("Tier 1 Turret");
+            }
+
             try {
                 BufferedReader br = new BufferedReader(new InputStreamReader(getClass().getResourceAsStream("/structure_coords.txt")));
                 String line;
@@ -36,6 +50,12 @@ public class Structures {
             } catch (Exception exc) {
                 exc.printStackTrace();
             }
+            turret[b].setOnMousePressed(event ->{
+//                final Node source = (Node) event.getSource();
+//                String id = source.getId();
+//                System.out.println(id);
+                System.out.println("oi");
+            });
         }
         turretPane.getChildren().addAll(turret);
         return turretPane;
@@ -47,6 +67,9 @@ public class Structures {
         for (int b = 0; b < inhibAmt; b++) {
             inhibitor[b] = new Circle((screenx * 0.01));
             inhibitor[b].setFill(new Color(1.0, 0.0, 0.5, 1.0));
+            inhibitor[b].setOnMousePressed(event ->{
+                System.out.println("hi");
+            });
             try {
                 BufferedReader br = new BufferedReader(new InputStreamReader(getClass().getResourceAsStream("/structure_coords.txt")));
                 String line;

@@ -31,10 +31,14 @@ public class InGameScreen {
             unitMove[i] = new Circle();
             threat[i] = new Circle();
         }
-        gameScreen.getChildren().addAll(createBackGround(screenx, screeny),
+        Pane interactibles = new Pane();
+        interactibles.getChildren().addAll(
                 structures.createStructures(screenx, screeny),
-                unitDraw(screeny, screenx, championCircle, results, resultNames),
-                EndTurn(screenx));
+                unitDraw(screeny, screenx, championCircle, results, resultNames));
+
+        gameScreen.getChildren().addAll(createBackGround(screenx, screeny),
+                EndTurn(screenx),
+                interactibles);
         gameScreen.setMinSize(screenx, screeny);
         return gameScreen;
     }

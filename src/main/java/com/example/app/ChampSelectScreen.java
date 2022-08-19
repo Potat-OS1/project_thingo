@@ -34,17 +34,7 @@ public class ChampSelectScreen {
         select.setMinHeight(screeny);
         select.setBackground(new Background(new BackgroundFill(Color.BLACK, null, null)));
 
-        Button removeThis = new Button();
-        removeThis.setOnAction((ActionEvent) ->{
-            select.setVisible(false);
-            removeThis.setVisible(false);
-
-        });
-
-        select.getChildren().addAll(selectedSlot(screenx, screeny), lockedIn(screenx, screeny), container(screenx, screeny), removeThis, lockin(screenx, screeny, pane));
-
-        //toggle for when im working on the game and not champ select.
-        select.setVisible(true);
+        select.getChildren().addAll(selectedSlot(screenx, screeny), lockedIn(screenx, screeny), container(screenx, screeny), lockin(screenx, screeny, pane));
 
         return select;
     }

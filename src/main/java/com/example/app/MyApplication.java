@@ -1,20 +1,13 @@
 package com.example.app;
 
 import javafx.application.*;
-import javafx.geometry.*;
 import javafx.scene.*;
-import javafx.scene.control.*;
 import javafx.scene.layout.*;
-import javafx.scene.paint.Color;
 import javafx.stage.*;
 import org.slf4j.*;
 
 public class MyApplication extends Application {
     private final static Logger logger = LoggerFactory.getLogger(MyApplication.class);
-
-    public Button confirmButton, cancelButton, pushButton, freezeButton, safeButton;
-    HBox box = new HBox(5);
-    int focus;
     // 1280/720  1920/1080
     double screenx = 1920;
     double screeny = 1080;
