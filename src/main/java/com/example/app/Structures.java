@@ -1,41 +1,48 @@
 package com.example.app;
 
 import javafx.scene.Node;
+import javafx.scene.layout.Background;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.shape.Shape;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 
-public class Structures {
-    public Node createStructures(double screenx, double screeny){
-        Pane structurePane = new Pane();
-        structurePane.getChildren().addAll(createTurrets(screenx, screeny), createInhibitors(screenx, screeny), createNexus(screenx, screeny));
-        return structurePane;
+public class Structures{
+    ArrayList<String> structures = new ArrayList<String>();
+    ArrayList<Double> hpInformation = new ArrayList<Double>();
+    InformationPane fillIt = new InformationPane();
+    public void createStructures(double screenx, double screeny, Pane unitPane, Pane infoPane){
+        createTurrets(screenx, screeny, unitPane, infoPane);
+        createInhibitors(screenx, screeny, unitPane, infoPane);
+        createNexus(screenx, screeny, unitPane, infoPane);
+        hpSetter();
     }
-    public Node createTurrets(double screenx, double screeny){
-        int turretAmt = 22;
-        Rectangle[] turret = new Rectangle[turretAmt];
-        Pane turretPane = new Pane();
-        for (int b = 0; b < turretAmt; b++) {
+    public void createTurrets(double screenx, double screeny, Pane unitPane, Pane infoPane){
+        Rectangle[] turret = new Rectangle[22];
+        for (int b = 0; b < turret.length; b++) {
             turret[b] = new Rectangle((screenx * 0.01), (screeny * 0.025));
-            turret[b].setFill(new Color(0.0, 0.6, 0.6, 1.0));
-
+            turret[b].setFill(new Color(1.0, 1.0, 1.0, 1.0));
             if (b < 4){
-                turret[b].setId("Nexus Turret");
+                turret[b].setId("Nexus Turret ID no: " + b);
+                turret[b].setFill(new Color(0.0, 0.8, 0.8, 1.0));
             }
-            if (4 <= b && b < 10){
-                turret[b].setId("Inhibitor Turret");
+            if (3 < b && b < 10){
+                turret[b].setId("Inhibitor Turret ID no: " + b);
+                turret[b].setFill(new Color(0.0, 0.8, 0.6, 1.0));
             }
-            if (10 <= b && b < 16){
-                turret[b].setId("Tier 2 Turret");
+            if (9 < b && b < 16){
+                turret[b].setId("Tier 2 Turret ID no: " + b);
+                turret[b].setFill(new Color(0.0, 0.8, 0.4, 1.0));
             }
-            if (16 <= b && b < 22){
-                turret[b].setId("Tier 1 Turret");
+            if (15 < b && b < 22){
+                turret[b].setId("Tier 1 Turret ID no: " + b);
+                turret[b].setFill(new Color(0.0, 0.8, 0.2, 1.0));
             }
-
             try {
                 BufferedReader br = new BufferedReader(new InputStreamReader(getClass().getResourceAsStream("/structure_coords.txt")));
                 String line;
@@ -50,26 +57,17 @@ public class Structures {
             } catch (Exception exc) {
                 exc.printStackTrace();
             }
-            turret[b].setOnMousePressed(event ->{
-//                final Node source = (Node) event.getSource();
-//                String id = source.getId();
-//                System.out.println(id);
-                System.out.println("oi");
-            });
         }
-        turretPane.getChildren().addAll(turret);
-        return turretPane;
+        hpBar(turret, screenx, screeny, unitPane, infoPane);
+        unitPane.getChildren().addAll(turret);
     }
-    public Node createInhibitors(double screenx, double screeny){
+    public void createInhibitors(double screenx, double screeny, Pane unitPane, Pane infoPane){
         int inhibAmt = 6;
         Circle[] inhibitor = new Circle[inhibAmt];
-        Pane inhibitorPane = new Pane();
         for (int b = 0; b < inhibAmt; b++) {
             inhibitor[b] = new Circle((screenx * 0.01));
             inhibitor[b].setFill(new Color(1.0, 0.0, 0.5, 1.0));
-            inhibitor[b].setOnMousePressed(event ->{
-                System.out.println("hi");
-            });
+            inhibitor[b].setId("Inhibitor ID no: " + (b + 22));
             try {
                 BufferedReader br = new BufferedReader(new InputStreamReader(getClass().getResourceAsStream("/structure_coords.txt")));
                 String line;
@@ -88,16 +86,16 @@ public class Structures {
                 exc.printStackTrace();
             }
         }
-        inhibitorPane.getChildren().addAll(inhibitor);
-        return inhibitorPane;
+        hpBar(inhibitor, screenx, screeny, unitPane, infoPane);
+        unitPane.getChildren().addAll(inhibitor);
     }
-    public Node createNexus(double screenx, double screeny){
+    public void createNexus(double screenx, double screeny, Pane unitPane, Pane infoPane){
         int nexusAmt = 2;
         Circle[] nexus = new Circle[nexusAmt];
-        Pane nexusPane = new Pane();
         for (int b = 0; b < nexusAmt; b++) {
             nexus[b] = new Circle((screenx * 0.01));
             nexus[b].setFill(new Color(0.35, 0.1, 0.5, 1.0));
+            nexus[b].setId("Nexus ID no: " + (b + 28));
             try {
                 BufferedReader br = new BufferedReader(new InputStreamReader(getClass().getResourceAsStream("/structure_coords.txt")));
                 String line;
@@ -116,7 +114,73 @@ public class Structures {
                 exc.printStackTrace();
             }
         }
-        nexusPane.getChildren().addAll(nexus);
-        return nexusPane;
+        unitPane.getChildren().addAll(nexus);
+        hpBar(nexus, screenx, screeny, unitPane, infoPane);
+    }
+    public void hpBar(Shape[] input, double screenx, double screeny, Pane unitPane, Pane infoPane){
+        Pane[] structureHp = new Pane[input.length];
+        Rectangle[] health = new Rectangle[input.length];
+        Rectangle[] hpBackdrop = new Rectangle[input.length];
+        for (int i = 0; i < input.length; i++){
+            structureHp[i] = new Pane();
+
+            structureHp[i].setLayoutY(input[i].getBoundsInLocal().getMinY() - (screeny * 0.015));
+            structureHp[i].setMinSize((screenx * 0.03), (screeny * 0.01));
+            structureHp[i].setBackground(Background.fill(new Color(0.2, 0.2, 0.2, 1.0)));
+
+            health[i] = new Rectangle();
+            health[i].setLayoutX(screenx * 0.0025);
+            health[i].setLayoutY(screeny * 0.0025);
+            health[i].setHeight(screeny * 0.005);
+            health[i].setWidth(screenx * 0.025);
+            health[i].setFill(new Color(0.8, 0.0, 0.4, 1.0));
+
+            hpBackdrop[i] = new Rectangle();
+            hpBackdrop[i].setLayoutX(screenx * 0.0025);
+            hpBackdrop[i].setLayoutY(screeny * 0.0025);
+            hpBackdrop[i].setHeight(screeny * 0.005);
+            hpBackdrop[i].setWidth(screenx * 0.025);
+            hpBackdrop[i].setFill(new Color(0.0, 0.0, 0.0, 1.0));
+
+            structureHp[i].getChildren().addAll(hpBackdrop[i], health[i]);
+            structureHp[i].setLayoutX(input[i].getBoundsInLocal().getCenterX() - (structureHp[i].getBoundsInLocal().getWidth() / 2.0) - (screenx * 0.0015));
+            structures.add(input[i].getId());
+            structureOnClick(input, infoPane);
+        }
+        unitPane.getChildren().addAll(structureHp);
+    }
+    public void hpSetter(){
+        for (String object : structures){
+            if(object.startsWith("Nexus Turret ID")){
+                hpInformation.add(100.0);
+            }
+            if(object.startsWith("Nexus ID")){
+                hpInformation.add(200.0);
+            }
+            if(object.startsWith("Inhibitor Turret ID")){
+                hpInformation.add(120.0);
+            }
+            if(object.startsWith("Inhibitor ID")){
+                hpInformation.add(100.0);
+            }
+            if(object.startsWith("Tier 2 Turret ID")){
+                hpInformation.add(110.0);
+            }
+            if(object.startsWith("Tier 1 Turret ID")){
+                hpInformation.add(100.0);
+            }
+        }
+    }
+    public void structureOnClick(Shape[] input, Pane infoPane){
+        for (Shape inputMod : input) {
+            inputMod.setOnMousePressed(event -> {
+                InformationPane aaaa = new InformationPane();
+                final Node source = (Node) event.getSource();
+                String id = source.getId();
+                infoPane.getChildren().add(aaaa.returnInformation(inputMod, hpInformation));
+                System.out.println(infoPane.getChildren());
+                //fillIt.returnInformation(inputMod, hpInformation);
+            });
+        }
     }
 }

@@ -33,8 +33,6 @@ public class ChampionAssign {
                 System.out.println("fuck you");
             }
         }
-
-
         List<Double> xCoord = Arrays.asList(screenx * .215, screenx * .226, screenx * .236, screenx * .245, screenx * .25);
         List<Double> yCoord = Arrays.asList(screeny * .9, screeny * .903, screeny * .91, screeny * .922, screeny * .94);
         for (int i = 0; i < unit.length; i++){
@@ -43,7 +41,6 @@ public class ChampionAssign {
             unit[i].setCenterY(yCoord.get(i));
             unit[i].setFill(new ImagePattern(results.get(resultNames.indexOf(champCircle[i].getId() + ".png"))));
             unit[i].setRadius(screeny * .01);
-
             unitMove[i].setId(champList.get(selectedChamp.get(i)) + "'s Movement Range");
             unitMove[i].setRadius(champMove.get(i));
             unitMove[i].setCenterX(xCoord.get(i));
@@ -52,7 +49,6 @@ public class ChampionAssign {
             unitMove[i].setStrokeWidth(3.0);
             unitMove[i].setFill(Color.TRANSPARENT);
             unitMove[i].setVisible(false);
-
             threat[i].setRadius(champThreat.get(i));
             threat[i].setCenterX(xCoord.get(i));
             threat[i].setCenterY(yCoord.get(i));

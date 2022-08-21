@@ -19,22 +19,26 @@ import java.util.Objects;
 
 public class InGameScreen {
     int turnCount;
+    int state = 0;
     int teamSize = 5;
-    public Circle[] unit = new Circle[teamSize];
+    Circle[] unit = new Circle[teamSize];
     Circle[] unitMove = new Circle[teamSize];
     Circle[] threat = new Circle[teamSize];
+    Pane interactibles = new Pane();
+    Pane infoPane = new Pane();
+    VBox section = new VBox();
     public Node GameScreen(double screenx, double screeny, Circle[] championCircle, List<Image> results, List<String> resultNames){
         Pane gameScreen = new Pane();
-        Structures structures = new Structures();
+        Pane unitPane = new Pane();
+
         for (int i = 0; i < teamSize; i++){
             unit[i] = new Circle();
             unitMove[i] = new Circle();
             threat[i] = new Circle();
         }
-        Pane interactibles = new Pane();
         interactibles.getChildren().addAll(
-                structures.createStructures(screenx, screeny),
-                unitDraw(screeny, screenx, championCircle, results, resultNames));
+                infoSetter(),
+                unitDraw(screeny, screenx, championCircle, results, resultNames, unitPane));
 
         gameScreen.getChildren().addAll(createBackGround(screenx, screeny),
                 EndTurn(screenx),
@@ -42,32 +46,54 @@ public class InGameScreen {
         gameScreen.setMinSize(screenx, screeny);
         return gameScreen;
     }
-
-    public Node unitDraw(double screeny, double screenx, Circle[] championCircle, List<Image> results, List<String> resultNames){
-        Pane unitPane = new Pane();
+    public void structureDraw(double screeny, double screenx, Pane unitPane){
+        Structures structures = new Structures();
+        structures.createStructures(screenx, screeny, unitPane, infoPane);
+    }
+    public Node unitDraw(double screeny, double screenx, Circle[] championCircle, List<Image> results, List<String> resultNames, Pane unitPane){
         ChampionAssign assign = new ChampionAssign();
         assign.BaseStatAssign(unit, unitMove, threat, unitPane, screeny, screenx, championCircle, results, resultNames);
         buttonLogic();
-
+        structureDraw(screeny, screenx, unitPane);
         return unitPane;
     }
-
+    public Node infoSetter(){
+        InformationPane info = new InformationPane();
+        return info.leftInfoPane();
+    }
     public void buttonLogic(){
         for (int d = 0; d < unit.length; d++){
             unit[d].setOnMousePressed(event ->{
                 Node source = (Node) event.getSource();
                 String id = source.getId();
-                for (int e = 0; e < unit.length; e++){
-                    if (Objects.equals(unit[e].getId(), id)){
-                        unitMove[e].setVisible(true);
-                        threat[e].setVisible(true);
-                    }
-                    else{
-                        unitMove[e].setVisible(false);
-                        threat[e].setVisible(false);
+                if (state == 0){
+                    for (int e = 0; e < unit.length; e++){
+                        if (Objects.equals(unit[e].getId(), id)){
+                            unitMove[e].setVisible(true);
+                            threat[e].setVisible(true);
+                            state = 1;
+                            System.out.println("on");
+                        }
+                        else{
+                            unitMove[e].setVisible(false);
+                            threat[e].setVisible(false);
+                        }
                     }
                 }
+                if (state == 2){
+                    for (int e = 0; e < unit.length; e++){
+                        unitMove[e].setVisible(false);
+                        threat[e].setVisible(false);
+                        state = 0;
+                    }
+                }
+                if (state == 1){
+                    state = 2;
+                    System.out.println(state);
+
+                }
             });
+
             unitMove[d].setOnMousePressed(event ->{
                 Node source = (Node) event.getSource();
                 String id = source.getId();

@@ -117,7 +117,6 @@ public class ChampSelectScreen {
         slot.setLayoutX(screenx * .04);
         slot.setLayoutY(screeny * .02);
         slot.setFill(new Color(0.0,0.0,1.0, 0.5));
-
         return slot;
     }
 
@@ -138,7 +137,6 @@ public class ChampSelectScreen {
         lockin.setScaleX(screenx * .0015);
         lockin.setScaleY(screenx * .0015);
         lockin.setFill(new Color(0.0, 1.0, 1.0, 1.0));
-
         lockin.setOnMousePressed(event ->{
             if (currentSlot < 5 && focusedChampion != null){
                 championCircle[currentSlot].setId(focusedChampion);
@@ -160,8 +158,6 @@ public class ChampSelectScreen {
     }
 
     public void champPortrait(Rectangle[] champIcon) {
-        //this code reads the champions_list.txt and applies the names to each of the icons ID.
-
         String imageBase = "/champions/";
         try {
             BufferedReader br = new BufferedReader(new InputStreamReader(getClass().getResourceAsStream("/champions/champions_list.txt")));
