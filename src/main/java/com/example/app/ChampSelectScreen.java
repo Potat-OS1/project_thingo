@@ -145,7 +145,6 @@ public class ChampSelectScreen {
                     slot.setVisible(false);
                     InGameScreen initGameScreen = new InGameScreen();
                     pane.getChildren().add(initGameScreen.GameScreen(screenx, screeny, championCircle, results, resultNames));
-                    //aaaa.unit[0].setFill(new Color(1.0, 1.0, 1.0, 1.0));
                 }
                 else{
                     slot.setLayoutY(championCircle[currentSlot+1].getLayoutY() - (slot.getWidth() /5.25));

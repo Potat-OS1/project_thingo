@@ -3,6 +3,7 @@ package com.example.app;
 import javafx.scene.Node;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
@@ -14,15 +15,15 @@ import java.util.ArrayList;
 
 public class Structures{
     ArrayList<String> structures = new ArrayList<String>();
-    ArrayList<Double> hpInformation = new ArrayList<Double>();
-    InformationPane fillIt = new InformationPane();
-    public void createStructures(double screenx, double screeny, Pane unitPane, Pane infoPane){
-        createTurrets(screenx, screeny, unitPane, infoPane);
-        createInhibitors(screenx, screeny, unitPane, infoPane);
-        createNexus(screenx, screeny, unitPane, infoPane);
+    ArrayList<Integer> hpInformation = new ArrayList<Integer>();
+    public void createStructures(double screenx, double screeny, Pane unitPane, Pane infoPane, VBox section){
+
+        createTurrets(screenx, screeny, unitPane, infoPane, section);
+        createInhibitors(screenx, screeny, unitPane, infoPane, section);
+        createNexus(screenx, screeny, unitPane, infoPane, section);
         hpSetter();
     }
-    public void createTurrets(double screenx, double screeny, Pane unitPane, Pane infoPane){
+    public void createTurrets(double screenx, double screeny, Pane unitPane, Pane infoPane, VBox section){
         Rectangle[] turret = new Rectangle[22];
         for (int b = 0; b < turret.length; b++) {
             turret[b] = new Rectangle((screenx * 0.01), (screeny * 0.025));
@@ -58,10 +59,10 @@ public class Structures{
                 exc.printStackTrace();
             }
         }
-        hpBar(turret, screenx, screeny, unitPane, infoPane);
+        hpBar(turret, screenx, screeny, unitPane, infoPane, section);
         unitPane.getChildren().addAll(turret);
     }
-    public void createInhibitors(double screenx, double screeny, Pane unitPane, Pane infoPane){
+    public void createInhibitors(double screenx, double screeny, Pane unitPane, Pane infoPane, VBox section){
         int inhibAmt = 6;
         Circle[] inhibitor = new Circle[inhibAmt];
         for (int b = 0; b < inhibAmt; b++) {
@@ -86,10 +87,10 @@ public class Structures{
                 exc.printStackTrace();
             }
         }
-        hpBar(inhibitor, screenx, screeny, unitPane, infoPane);
+        hpBar(inhibitor, screenx, screeny, unitPane, infoPane, section);
         unitPane.getChildren().addAll(inhibitor);
     }
-    public void createNexus(double screenx, double screeny, Pane unitPane, Pane infoPane){
+    public void createNexus(double screenx, double screeny, Pane unitPane, Pane infoPane, VBox section){
         int nexusAmt = 2;
         Circle[] nexus = new Circle[nexusAmt];
         for (int b = 0; b < nexusAmt; b++) {
@@ -115,9 +116,9 @@ public class Structures{
             }
         }
         unitPane.getChildren().addAll(nexus);
-        hpBar(nexus, screenx, screeny, unitPane, infoPane);
+        hpBar(nexus, screenx, screeny, unitPane, infoPane, section);
     }
-    public void hpBar(Shape[] input, double screenx, double screeny, Pane unitPane, Pane infoPane){
+    public void hpBar(Shape[] input, double screenx, double screeny, Pane unitPane, Pane infoPane, VBox section){
         Pane[] structureHp = new Pane[input.length];
         Rectangle[] health = new Rectangle[input.length];
         Rectangle[] hpBackdrop = new Rectangle[input.length];
@@ -145,41 +146,37 @@ public class Structures{
             structureHp[i].getChildren().addAll(hpBackdrop[i], health[i]);
             structureHp[i].setLayoutX(input[i].getBoundsInLocal().getCenterX() - (structureHp[i].getBoundsInLocal().getWidth() / 2.0) - (screenx * 0.0015));
             structures.add(input[i].getId());
-            structureOnClick(input, infoPane);
+            structureOnClick(input, section);
         }
         unitPane.getChildren().addAll(structureHp);
     }
     public void hpSetter(){
         for (String object : structures){
             if(object.startsWith("Nexus Turret ID")){
-                hpInformation.add(100.0);
+                hpInformation.add(100);
             }
             if(object.startsWith("Nexus ID")){
-                hpInformation.add(200.0);
+                hpInformation.add(200);
             }
             if(object.startsWith("Inhibitor Turret ID")){
-                hpInformation.add(120.0);
+                hpInformation.add(120);
             }
             if(object.startsWith("Inhibitor ID")){
-                hpInformation.add(100.0);
+                hpInformation.add(100);
             }
             if(object.startsWith("Tier 2 Turret ID")){
-                hpInformation.add(110.0);
+                hpInformation.add(110);
             }
             if(object.startsWith("Tier 1 Turret ID")){
-                hpInformation.add(100.0);
+                hpInformation.add(100);
             }
         }
     }
-    public void structureOnClick(Shape[] input, Pane infoPane){
+    public void structureOnClick(Shape[] input, VBox section){
         for (Shape inputMod : input) {
             inputMod.setOnMousePressed(event -> {
                 InformationPane aaaa = new InformationPane();
-                final Node source = (Node) event.getSource();
-                String id = source.getId();
-                infoPane.getChildren().add(aaaa.returnInformation(inputMod, hpInformation));
-                System.out.println(infoPane.getChildren());
-                //fillIt.returnInformation(inputMod, hpInformation);
+                aaaa.returnInformation(inputMod, hpInformation, section);
             });
         }
     }
