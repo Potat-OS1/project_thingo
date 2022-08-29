@@ -8,22 +8,20 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.Shape;
-
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 
 public class Structures{
-    ArrayList<String> structures = new ArrayList<String>();
-    ArrayList<Integer> hpInformation = new ArrayList<Integer>();
-    public void createStructures(double screenx, double screeny, Pane unitPane, Pane infoPane, VBox section){
-
-        createTurrets(screenx, screeny, unitPane, infoPane, section);
-        createInhibitors(screenx, screeny, unitPane, infoPane, section);
-        createNexus(screenx, screeny, unitPane, infoPane, section);
+    ArrayList<String> structures = new ArrayList<>();
+    ArrayList<Integer> hpInformation = new ArrayList<>();
+    public void createStructures(double screenx, double screeny, Pane unitPane, VBox section){
+        createTurrets(screenx, screeny, unitPane, section);
+        createInhibitors(screenx, screeny, unitPane, section);
+        createNexus(screenx, screeny, unitPane, section);
         hpSetter();
     }
-    public void createTurrets(double screenx, double screeny, Pane unitPane, Pane infoPane, VBox section){
+    public void createTurrets(double screenx, double screeny, Pane unitPane, VBox section){
         Rectangle[] turret = new Rectangle[22];
         for (int b = 0; b < turret.length; b++) {
             turret[b] = new Rectangle((screenx * 0.01), (screeny * 0.025));
@@ -59,10 +57,10 @@ public class Structures{
                 exc.printStackTrace();
             }
         }
-        hpBar(turret, screenx, screeny, unitPane, infoPane, section);
+        hpBar(turret, screenx, screeny, unitPane, section);
         unitPane.getChildren().addAll(turret);
     }
-    public void createInhibitors(double screenx, double screeny, Pane unitPane, Pane infoPane, VBox section){
+    public void createInhibitors(double screenx, double screeny, Pane unitPane, VBox section){
         int inhibAmt = 6;
         Circle[] inhibitor = new Circle[inhibAmt];
         for (int b = 0; b < inhibAmt; b++) {
@@ -87,10 +85,10 @@ public class Structures{
                 exc.printStackTrace();
             }
         }
-        hpBar(inhibitor, screenx, screeny, unitPane, infoPane, section);
+        hpBar(inhibitor, screenx, screeny, unitPane, section);
         unitPane.getChildren().addAll(inhibitor);
     }
-    public void createNexus(double screenx, double screeny, Pane unitPane, Pane infoPane, VBox section){
+    public void createNexus(double screenx, double screeny, Pane unitPane, VBox section){
         int nexusAmt = 2;
         Circle[] nexus = new Circle[nexusAmt];
         for (int b = 0; b < nexusAmt; b++) {
@@ -116,9 +114,9 @@ public class Structures{
             }
         }
         unitPane.getChildren().addAll(nexus);
-        hpBar(nexus, screenx, screeny, unitPane, infoPane, section);
+        hpBar(nexus, screenx, screeny, unitPane, section);
     }
-    public void hpBar(Shape[] input, double screenx, double screeny, Pane unitPane, Pane infoPane, VBox section){
+    public void hpBar(Shape[] input, double screenx, double screeny, Pane unitPane, VBox section){
         Pane[] structureHp = new Pane[input.length];
         Rectangle[] health = new Rectangle[input.length];
         Rectangle[] hpBackdrop = new Rectangle[input.length];
@@ -176,7 +174,9 @@ public class Structures{
         for (Shape inputMod : input) {
             inputMod.setOnMousePressed(event -> {
                 InformationPane aaaa = new InformationPane();
-                aaaa.returnInformation(inputMod, hpInformation, section);
+                final Node source = (Node) event.getSource();
+                String hp = String.valueOf(hpInformation.get(structures.indexOf(source.getId())));
+                aaaa.returnInformation(source, hp, section);
             });
         }
     }

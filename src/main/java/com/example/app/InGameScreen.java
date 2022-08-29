@@ -7,31 +7,31 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
-
 import java.io.InputStream;
 import java.util.List;
 
 public class InGameScreen {
-
     Pane interactibles = new Pane();
     Pane infoPane = new Pane();
     VBox section = new VBox();
     public Node GameScreen(double screenx, double screeny, Circle[] championCircle, List<Image> results, List<String> resultNames){
         Pane gameScreen = new Pane();
         Pane unitPane = new Pane();
+        Pane minionPane = new Pane();
 
         InformationPane infoGrabber = new InformationPane();
         Structures structureGrabber = new Structures();
         Units assign = new Units();
-
+        Minions minionGrabber = new Minions();
 
         interactibles.getChildren().addAll(
                 infoGrabber.leftInfoPane(infoPane, section),
                 unitPane);
-
-        structureGrabber.createStructures(screenx, screeny, unitPane, infoPane, section);
+        unitPane.getChildren().add(minionPane);
+        structureGrabber.createStructures(screenx, screeny, unitPane, section);
         assign.createUnits();
         assign.BaseStatAssign(unitPane, screeny, screenx, championCircle, results, resultNames);
+        minionGrabber.createMinions(minionPane, section);
 
         gameScreen.getChildren().addAll(createBackGround(screenx, screeny),
                 assign.endTurn(screenx),

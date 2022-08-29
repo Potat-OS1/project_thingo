@@ -11,7 +11,6 @@ import javafx.scene.paint.Color;
 import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Shape;
-
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.util.Arrays;
@@ -124,6 +123,7 @@ public class Units {
         List<Integer> selectedChamp = Arrays.asList(0, 1, 2, 3, 4);
         List<Double> champThreat = Arrays.asList(0.0, 0.0, 0.0, 0.0, 0.0);
         List<Double> champMove = Arrays.asList(0.0, 0.0, 0.0, 0.0, 0.0);
+        List<Integer> champMoney = Arrays.asList(0,0,0,0,0);
         for (int a = 0; a < champCircle.length; a++) {
             try {
                 BufferedReader br = new BufferedReader(new InputStreamReader(getClass().getResourceAsStream("/champions/" + champCircle[a].getId() + ".txt")));
