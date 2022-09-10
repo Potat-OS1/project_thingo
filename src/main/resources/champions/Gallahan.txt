@@ -1,2 +1,2 @@
 range .02
-move .07
+move .05

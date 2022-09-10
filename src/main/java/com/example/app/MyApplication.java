@@ -11,11 +11,10 @@ public class MyApplication extends Application {
     // 1280/720  1920/1080
     double screenx = 1920;
     double screeny = 1080;
+    Pane pane = new Pane();
+    Scene scene = new Scene(pane, screenx, screeny);
     @Override
     public void start(Stage primaryStage){
-        Pane pane = new Pane();
-        Scene scene = new Scene(pane, screenx, screeny);
-
         ChampSelectScreen run = new ChampSelectScreen();
         pane.getChildren().add(run.champSelect(screenx, screeny, pane));
         pane.setMinSize(screenx, screeny);

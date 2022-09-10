@@ -16,26 +16,27 @@ public class InGameScreen {
     VBox section = new VBox();
     public Node GameScreen(double screenx, double screeny, Circle[] championCircle, List<Image> results, List<String> resultNames){
         Pane gameScreen = new Pane();
-        Pane unitPane = new Pane();
         Pane minionPane = new Pane();
+        Pane unitPane = new Pane();
+        Pane actionPane = new Pane();
 
         InformationPane infoGrabber = new InformationPane();
         Structures structureGrabber = new Structures();
         Units assign = new Units();
         Minions minionGrabber = new Minions();
-
         interactibles.getChildren().addAll(
                 infoGrabber.leftInfoPane(infoPane, section),
                 unitPane);
         unitPane.getChildren().add(minionPane);
         structureGrabber.createStructures(screenx, screeny, unitPane, section);
-        assign.createUnits();
+        assign.createUnits(actionPane);
         assign.BaseStatAssign(unitPane, screeny, screenx, championCircle, results, resultNames);
         minionGrabber.createMinions(minionPane, section);
 
         gameScreen.getChildren().addAll(createBackGround(screenx, screeny),
                 assign.endTurn(screenx),
-                interactibles);
+                interactibles,
+                actionPane);
 
         gameScreen.setMinSize(screenx, screeny);
         return gameScreen;

@@ -54,7 +54,6 @@ public class InformationPane{
         name = name.replace(" ID no: ", "");
         while (Character.isDigit(name.charAt(name.length() - 1))){
             name = name.substring(0, name.length() - 1);
-            System.out.println("aaaa");
         }
 
         Label nameDisplay = new Label(name);

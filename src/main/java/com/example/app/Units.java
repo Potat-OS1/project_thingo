@@ -1,10 +1,13 @@
 package com.example.app;
 
 import javafx.geometry.Pos;
+import javafx.scene.Cursor;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
+import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
@@ -17,63 +20,155 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
-public class Units {
+public class Units{
     int turnCount;
-    int state = 0;
+    static int state = 0;
     int teamSize = 5;
     Circle[] unit = new Circle[teamSize];
     Circle[] unitMove = new Circle[teamSize];
     Circle[] threat = new Circle[teamSize];
-    public void createUnits(){
+    double coordx = 0.0;
+    double coordy = 0.0;
+    public void createUnits(Pane actionPane){
         for (int i = 0; i < teamSize; i++){
             unit[i] = new Circle();
             unitMove[i] = new Circle();
             threat[i] = new Circle();
         }
-        buttonLogic();
+        buttonLogic(actionPane, unit, unitMove, threat);
     }
-    public void buttonLogic(){
-        for (int d = 0; d < unit.length; d++){
-            unit[d].setOnMousePressed(event ->{
+    public void buttonCancel(Circle move, Pane actionPane, Circle[] unit, Circle[] unitMove, Circle[] threat, double coordx, double coordy){
+            actionPane.setVisible(false);
+            state = 3;
+            move.setCursor(Cursor.DEFAULT);
+            String id = move.getId();
+            int idIndex = move.getId().length();
+            if (move.getId().contains("'")){
+                idIndex = id.indexOf("'");
+            }
+            else{
+                System.out.println("not a child");
+            }
+            String searchId = "";
+            for (int b = 0; b < idIndex; b++){
+                searchId = searchId + id.charAt(b);
+            }
+            for (Circle Unitc : unit) {
+                if (Unitc.getId().contains(searchId)){
+                    if (Unitc.getCenterX() != coordx){
+                        Unitc.setCenterX(coordx);
+                        Unitc.setCenterY(coordy);
+                    }
+                }
+            }
+            for (Circle range : unitMove) {
+                if (range.getId().contains(searchId)){
+                    if (range.getCenterX() != coordx){
+                        range.setCenterX(coordx);
+                        range.setCenterY(coordy);
+                    }
+                }
+                if (range.isVisible()) {
+                    range.setVisible(false);
+                }
+            }
+            for (Circle threatRange : threat) {
+                if (threatRange.getId().contains(searchId)){
+                    if (threatRange.getCenterX() != coordx){
+                        threatRange.setCenterX(coordx);
+                        threatRange.setCenterY(coordy);
+                    }
+                }
+                if (threatRange.isVisible()) {
+                    threatRange.setVisible(false);
+                }
+            }
+            coordx = 0;
+            coordy = 0;
+    }
+    public void buttonLogic(Pane actionPane, Circle[] unit, Circle[] unitMove, Circle[] threat){
+        for (Circle Unit: unit){
+            Unit.setOnMouseEntered(event ->{
                 Node source = (Node) event.getSource();
-                String id = source.getId();
-                if (state == 0){
-                    for (int e = 0; e < unit.length; e++){
-                        if (Objects.equals(unit[e].getId(), id)){
-                            unitMove[e].setVisible(true);
-                            threat[e].setVisible(true);
-                            state = 1;
-                            System.out.println("on");
+                if (state == 0 || state == 3){
+                    for (Circle range: unitMove){
+                        if (range.getId().contains(source.getId())){
+                            range.setVisible(true);
+                            range.setOpacity(0.5);
                         }
-                        else{
-                            unitMove[e].setVisible(false);
-                            threat[e].setVisible(false);
+                    }
+                    for (Circle threatRange: threat){
+                        if (threatRange.getId().contains(source.getId())){
+                            threatRange.setVisible(true);
+                            threatRange.setOpacity(0.4);
                         }
                     }
                 }
-                if (state == 2){
-                    for (int e = 0; e < unit.length; e++){
-                        unitMove[e].setVisible(false);
-                        threat[e].setVisible(false);
-                        state = 0;
-                    }
-                }
-                if (state == 1){
-                    state = 2;
+                else{
                     System.out.println(state);
-
                 }
             });
-
-            unitMove[d].setOnMousePressed(event ->{
+            Unit.setOnMouseExited(event ->{
+                if (state == 0 || state == 3){
+                    Node source = (Node) event.getSource();
+                    for (Circle range: unitMove){
+                        if (range.getId().contains(source.getId())){
+                            range.setVisible(false);
+                        }
+                    }
+                    for (Circle threatRange: threat){
+                        if (threatRange.getId().contains(source.getId())){
+                            threatRange.setVisible(false);
+                        }
+                    }
+                }
+            });
+            Unit.setOnMousePressed(event -> {
+                Node source = (Node) event.getSource();
+                if (event.getButton() == MouseButton.PRIMARY){
+                    for (Circle Unitc: unit){
+                        if (Unitc.getId().contains(source.getId()) && ((state == 0) || (state == 3))){
+                            coordx = Unitc.getCenterX();
+                            coordy = Unitc.getCenterY();
+                        }
+                    }
+                    for (Circle range: unitMove){
+                        if (range.getId().contains(source.getId())){
+                            range.setOpacity(0.8);
+                        }
+                    }
+                    for (Circle threatRange: threat){
+                        if (threatRange.getId().contains(source.getId())){
+                            threatRange.setOpacity(0.8);
+                        }
+                    }
+                }
+                state = 1;
+                if (event.getButton() == MouseButton.SECONDARY){
+                    buttonCancel(Unit, actionPane, unit, unitMove, threat, coordx, coordy);
+                    state = 3;
+                }
+            });
+        }
+        for (Circle move: unitMove){
+            move.setOnMousePressed(event ->{
+                if (event.getButton() == MouseButton.SECONDARY){
+                    buttonCancel(move, actionPane, unit, unitMove, threat, coordx, coordy);
+                    state = 3;
+                }
                 Node source = (Node) event.getSource();
                 String id = source.getId();
-                for (int f = 0; f < unitMove.length; f++){
-                    if (Objects.equals(unitMove[f].getId(), id)){
-                        unit[f].setCenterX(event.getX());
-                        unit[f].setCenterY(event.getY());
-                        threat[f].setCenterX(unit[f].getCenterX());
-                        threat[f].setCenterY(unit[f].getCenterY());
+                if (event.getButton() == MouseButton.PRIMARY){
+                    for (int f = 0; f < unitMove.length; f++){
+                        if (Objects.equals(unitMove[f].getId(), id)){
+                            state = 2;
+                            unit[f].setCenterX(event.getX());
+                            unit[f].setCenterY(event.getY());
+                            threat[f].setCenterX(unit[f].getCenterX());
+                            threat[f].setCenterY(unit[f].getCenterY());
+                            Actions action = new Actions();
+                            action.actionCall(event, move, actionPane, unit, unitMove, threat, coordx, coordy, state);
+                        }
                     }
                 }
             });
@@ -156,6 +251,7 @@ public class Units {
             unitMove[i].setStrokeWidth(3.0);
             unitMove[i].setFill(Color.TRANSPARENT);
             unitMove[i].setVisible(false);
+            threat[i].setId(champList.get(selectedChamp.get(i)) + "'s Threat Range");
             threat[i].setRadius(champThreat.get(i));
             threat[i].setCenterX(xCoord.get(i));
             threat[i].setCenterY(yCoord.get(i));
