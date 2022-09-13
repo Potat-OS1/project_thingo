@@ -12,16 +12,14 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
-
-
 import java.util.Arrays;
 import java.util.List;
 
+import static com.example.app.MyApplication.screeny;
+import static com.example.app.MyApplication.screenx;
+
 public class Actions{
-    MyApplication grabber = new MyApplication();
-    double screenx = grabber.screenx;
-    double screeny = grabber.screeny;
-    public void setActions(Circle move, Pane actionPane, Circle[] unit, Circle[] unitMove, Circle[] threat, double coordx, double coordy, int aaaa){
+    public void setActions(Circle move, Pane actionPane, int aaaa){
         VBox actionPaneVBox = new VBox();
         actionPaneVBox.setSpacing(screeny * 0.005);
         actionPaneVBox.setPadding(new Insets(screeny * 0.003, screeny * 0.003, screeny * 0.003, screeny * 0.003));
@@ -62,15 +60,18 @@ public class Actions{
                         if (event.getButton() == MouseButton.PRIMARY){
                             Units unitc = new Units();
                             System.out.println("aaaa is " + aaaa);
-                            unitc.buttonCancel(move, actionPane, unit, unitMove, threat, coordx, coordy);
+                            unitc.buttonCancel(move, actionPane);
                         }
                     });
             }
         }
     }
-    public void actionCall(MouseEvent mouse, Circle move, Pane actionPane, Circle[] unit, Circle[] unitMove, Circle[] threat, double coordx, double coordy, int state){
+    public void buttonAttack(){}
+    public void buttonAbilities(){}
+    public void buttonActive(){}
+    public void actionCall(MouseEvent mouse, Circle move, Pane actionPane, int state){
         actionPane.setVisible(true);
-        setActions(move, actionPane, unit, unitMove, threat, coordx, coordy, state);
+        setActions(move, actionPane, state);
         actionPane.setLayoutX(mouse.getX() + (screenx * 0.01));
         actionPane.setLayoutY(mouse.getY() - (screeny * 0.1));
     }

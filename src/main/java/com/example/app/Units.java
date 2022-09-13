@@ -7,7 +7,6 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.input.MouseButton;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
@@ -23,21 +22,23 @@ import java.util.Objects;
 public class Units{
     int turnCount;
     static int state = 0;
-    int teamSize = 5;
-    Circle[] unit = new Circle[teamSize];
-    Circle[] unitMove = new Circle[teamSize];
-    Circle[] threat = new Circle[teamSize];
-    double coordx = 0.0;
-    double coordy = 0.0;
+    static int teamSize = 5;
+    static Circle[] unit = new Circle[teamSize];
+    static Circle[] unitMove = new Circle[teamSize];
+    static Circle[] threat = new Circle[teamSize];
+    static double coordx = 0.0;
+    static double coordy = 0.0;
+    TestEnemySpawn tes = new TestEnemySpawn();
+
     public void createUnits(Pane actionPane){
         for (int i = 0; i < teamSize; i++){
             unit[i] = new Circle();
             unitMove[i] = new Circle();
             threat[i] = new Circle();
         }
-        buttonLogic(actionPane, unit, unitMove, threat);
+        buttonLogic(actionPane);
     }
-    public void buttonCancel(Circle move, Pane actionPane, Circle[] unit, Circle[] unitMove, Circle[] threat, double coordx, double coordy){
+    public void buttonCancel(Circle move, Pane actionPane){
             actionPane.setVisible(false);
             state = 3;
             move.setCursor(Cursor.DEFAULT);
@@ -47,7 +48,7 @@ public class Units{
                 idIndex = id.indexOf("'");
             }
             else{
-                System.out.println("not a child");
+                System.out.println(" ");
             }
             String searchId = "";
             for (int b = 0; b < idIndex; b++){
@@ -86,7 +87,7 @@ public class Units{
             coordx = 0;
             coordy = 0;
     }
-    public void buttonLogic(Pane actionPane, Circle[] unit, Circle[] unitMove, Circle[] threat){
+    public void buttonLogic(Pane actionPane){
         for (Circle Unit: unit){
             Unit.setOnMouseEntered(event ->{
                 Node source = (Node) event.getSource();
@@ -105,7 +106,7 @@ public class Units{
                     }
                 }
                 else{
-                    System.out.println(state);
+                    System.out.println(" ");
                 }
             });
             Unit.setOnMouseExited(event ->{
@@ -145,7 +146,7 @@ public class Units{
                 }
                 state = 1;
                 if (event.getButton() == MouseButton.SECONDARY){
-                    buttonCancel(Unit, actionPane, unit, unitMove, threat, coordx, coordy);
+                    buttonCancel(Unit, actionPane);
                     state = 3;
                 }
             });
@@ -153,7 +154,7 @@ public class Units{
         for (Circle move: unitMove){
             move.setOnMousePressed(event ->{
                 if (event.getButton() == MouseButton.SECONDARY){
-                    buttonCancel(move, actionPane, unit, unitMove, threat, coordx, coordy);
+                    buttonCancel(move, actionPane);
                     state = 3;
                 }
                 Node source = (Node) event.getSource();
@@ -167,7 +168,7 @@ public class Units{
                             threat[f].setCenterX(unit[f].getCenterX());
                             threat[f].setCenterY(unit[f].getCenterY());
                             Actions action = new Actions();
-                            action.actionCall(event, move, actionPane, unit, unitMove, threat, coordx, coordy, state);
+                            action.actionCall(event, move, actionPane, state);
                         }
                     }
                 }
@@ -189,8 +190,9 @@ public class Units{
 
         VBox endBtnBox = new VBox();
 
-        endBtnBox.getChildren().addAll(endTurn, tCount, detectionButton());
-        endBtnBox.setMinWidth(65.0);
+        endBtnBox.getChildren().addAll(endTurn, tCount, detectionButton(), tes.spawnEnemy());
+        endBtnBox.setMinWidth(screenx * .05);
+        endBtnBox.setMaxWidth(screenx * .05);
         tCount.setAlignment(Pos.CENTER);
         tCount.setMaxWidth(Double.MAX_VALUE);
         tCount.setTextFill(Color.WHITE);
@@ -213,6 +215,7 @@ public class Units{
         });
         return detection;
     }
+
     public void BaseStatAssign(Pane unitPane, Double screeny, Double screenx, Circle[] champCircle, List<Image> results, List<String> resultNames){
         List<String> champList = Arrays.asList((champCircle[0].getId() + " unit 1"), (champCircle[1].getId() + " unit 2"), (champCircle[2].getId() + " unit 3"), (champCircle[3].getId() + " unit 4"), (champCircle[4].getId() + " unit 5"));
         List<Integer> selectedChamp = Arrays.asList(0, 1, 2, 3, 4);
@@ -221,7 +224,7 @@ public class Units{
         List<Integer> champMoney = Arrays.asList(0,0,0,0,0);
         for (int a = 0; a < champCircle.length; a++) {
             try {
-                BufferedReader br = new BufferedReader(new InputStreamReader(getClass().getResourceAsStream("/champions/" + champCircle[a].getId() + ".txt")));
+                BufferedReader br = new BufferedReader(new InputStreamReader(Objects.requireNonNull(getClass().getResourceAsStream("/champions/" + champCircle[a].getId() + ".txt"))));
                 String line;
                 while ((line = br.readLine()) != null) {
                     if (line.contains("range")) {

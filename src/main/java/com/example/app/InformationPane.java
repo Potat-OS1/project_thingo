@@ -9,12 +9,12 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
+import static com.example.app.InGameScreen.section;
+import static com.example.app.MyApplication.screenx;
+import static com.example.app.MyApplication.screeny;
 
 public class InformationPane{
-    public Node leftInfoPane(Pane infoPane, VBox section){
-        MyApplication grabber = new MyApplication();
-        double screenx = grabber.screenx;
-        double screeny = grabber.screeny;
+    public Node leftInfoPane(Pane infoPane){
         infoPane.setBackground(Background.fill(new Color(0.5 ,0.5, 0.5, 1.0)));
         infoPane.setMinSize((screenx * .2), (screeny));
         infoPane.getChildren().add(section);
@@ -22,11 +22,7 @@ public class InformationPane{
         section.getChildren().add(oi);
         return infoPane;
     }
-    public void returnInformation(Node input, String hp, VBox section){
-        MyApplication grabber = new MyApplication();
-        double screenx = grabber.screenx;
-        double screeny = grabber.screeny;
-
+    public void returnInformation(Node input, String hp){
         VBox info = new VBox();
         Pane hpBox = new Pane();
         Pane namePane = new Pane();

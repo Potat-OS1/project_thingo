@@ -4,13 +4,11 @@ import javafx.application.*;
 import javafx.scene.*;
 import javafx.scene.layout.*;
 import javafx.stage.*;
-import org.slf4j.*;
 
 public class MyApplication extends Application {
-    private final static Logger logger = LoggerFactory.getLogger(MyApplication.class);
     // 1280/720  1920/1080
-    double screenx = 1920;
-    double screeny = 1080;
+    static double screenx = 1920;
+    static double screeny = 1080;
     Pane pane = new Pane();
     Scene scene = new Scene(pane, screenx, screeny);
     @Override

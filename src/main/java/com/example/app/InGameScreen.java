@@ -13,10 +13,11 @@ import java.util.List;
 public class InGameScreen {
     Pane interactibles = new Pane();
     Pane infoPane = new Pane();
-    VBox section = new VBox();
+    static VBox section = new VBox();
+    static Pane mousePane = new Pane();
+    static Pane minionPane = new Pane();
     public Node GameScreen(double screenx, double screeny, Circle[] championCircle, List<Image> results, List<String> resultNames){
         Pane gameScreen = new Pane();
-        Pane minionPane = new Pane();
         Pane unitPane = new Pane();
         Pane actionPane = new Pane();
 
@@ -25,19 +26,20 @@ public class InGameScreen {
         Units assign = new Units();
         Minions minionGrabber = new Minions();
         interactibles.getChildren().addAll(
-                infoGrabber.leftInfoPane(infoPane, section),
+                infoGrabber.leftInfoPane(infoPane),
                 unitPane);
         unitPane.getChildren().add(minionPane);
-        structureGrabber.createStructures(screenx, screeny, unitPane, section);
+        structureGrabber.createStructures(screenx, screeny, unitPane);
         assign.createUnits(actionPane);
         assign.BaseStatAssign(unitPane, screeny, screenx, championCircle, results, resultNames);
-        minionGrabber.createMinions(minionPane, section);
+        minionGrabber.createMinions(minionPane);
 
         gameScreen.getChildren().addAll(createBackGround(screenx, screeny),
                 assign.endTurn(screenx),
                 interactibles,
-                actionPane);
-
+                actionPane,
+                mousePane);
+        mousePane.setVisible(false);
         gameScreen.setMinSize(screenx, screeny);
         return gameScreen;
     }

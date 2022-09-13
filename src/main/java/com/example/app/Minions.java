@@ -4,28 +4,25 @@ import javafx.collections.ObservableList;
 import javafx.scene.Node;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.Pane;
-import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
-
 import java.util.ArrayList;
+import static com.example.app.MyApplication.screenx;
+import static com.example.app.MyApplication.screeny;
+
 
 public class Minions {
-    MyApplication grabber = new MyApplication();
-    Units turnGrab = new Units();
     InformationPane sendInfo = new InformationPane();
-    double screenx = grabber.screenx;
-    double screeny = grabber.screeny;
     ArrayList<Circle> casterMinion = new ArrayList<>();
     ArrayList<Circle> meleeMinion = new ArrayList<>();
-    ArrayList<Pane> minionGroup = new ArrayList<>();
+    static ArrayList<Pane> minionGroup = new ArrayList<>();
     ArrayList<String> minionList = new ArrayList<>();
     ArrayList<Integer> HP = new ArrayList<>();
     int index = 0;
     int groupIndex = 0;
     int spawnPosition = 0;
     int state = 0;
-    public void createMinions(Pane minionPane, VBox section){
+    public void createMinions(Pane minionPane){
         for (int b = 0; b < 3; b++) {
             minionGroup.add(new Pane());
             for (int i = 0; i < 3; i++) {
@@ -36,7 +33,7 @@ public class Minions {
                 minionList.add(casterMinion.get(index).getId());
                 casterMinion.get(index).setOnMousePressed(event -> {
                     final Node source = (Node) event.getSource();
-                    minionInfo(source, section);
+                    minionInfo(source);
                 });
 
                 meleeMinion.add(new Circle(screeny * 0.008));
@@ -46,7 +43,7 @@ public class Minions {
                 minionList.add(meleeMinion.get(index).getId());
                 meleeMinion.get(index).setOnMousePressed(event -> {
                     final Node source = (Node) event.getSource();
-                    minionInfo(source, section);
+                    minionInfo(source);
                 });
 
                 minionGroup.get(groupIndex).getChildren().addAll(casterMinion.get(index), meleeMinion.get(index));
@@ -123,13 +120,9 @@ public class Minions {
                 minionGroup.setRotate(90);
             }
         }
-        ObservableList<Node> group = minionGroup.getChildren();
-        for (int i = 0; i < group.size(); i++){
-
-        }
     }
-    public void minionInfo(Node minion, VBox section){
+    public void minionInfo(Node minion){
         String hp = String.valueOf(HP.get(minionList.indexOf(minion.getId())));
-        sendInfo.returnInformation(minion, hp, section);
+        sendInfo.returnInformation(minion, hp);
     }
 }

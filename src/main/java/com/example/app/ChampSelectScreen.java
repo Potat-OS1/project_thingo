@@ -10,19 +10,19 @@ import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Polygon;
 import javafx.scene.shape.Rectangle;
-
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class ChampSelectScreen {
     String focusedChampion = null;
     int currentSlot = 0;
     int champAmt = 10;
     Rectangle[] champIcon = new Rectangle[champAmt];
-    List<String> resultNames = new ArrayList<String>();
+    List<String> resultNames = new ArrayList<>();
     List<Image> results = new ArrayList<>();
     Circle[] championCircle = new Circle[5];
     Rectangle slot = new Rectangle();
@@ -96,8 +96,7 @@ public class ChampSelectScreen {
             int assignedRow = (int) Math.ceil(i / 4);
             champIcon[i].setOnMousePressed(event ->{
                 final Node source = (Node) event.getSource();
-                String id = source.getId();
-                focusedChampion = id;
+                focusedChampion = source.getId();
                 championCircle[currentSlot].setFill(new ImagePattern(results.get(resultNames.indexOf(focusedChampion + ".png"))));
             });
             champions[assignedRow].getChildren().add(champIcon[i]);
@@ -121,16 +120,14 @@ public class ChampSelectScreen {
 
     public Node lockin(double screenx, double screeny, Pane pane){
         Polygon lockin = new Polygon();
-        lockin.getPoints().addAll(new Double[]{
-                0.0, 0.0,
+        lockin.getPoints().addAll(0.0, 0.0,
                 20.0, -10.0,
                 120.0, -10.0,
                 140.0, 0.0,
                 140.0, 40.0,
                 120.0, 50.0,
                 20.0, 50.0,
-                0.0, 40.0,
-        });
+                0.0, 40.0);
         lockin.setLayoutX((screenx - lockin.getLayoutBounds().getWidth()) / 2);
         lockin.setLayoutY(screeny * .85);
         lockin.setScaleX(screenx * .0015);
@@ -158,7 +155,7 @@ public class ChampSelectScreen {
     public void champPortrait(Rectangle[] champIcon) {
         String imageBase = "/champions/";
         try {
-            BufferedReader br = new BufferedReader(new InputStreamReader(getClass().getResourceAsStream("/champions/champions_list.txt")));
+            BufferedReader br = new BufferedReader(new InputStreamReader(Objects.requireNonNull(getClass().getResourceAsStream("/champions/champions_list.txt"))));
             br.lines().forEach(imageName -> {
                 URL imageURL = getClass().getResource(imageBase + imageName);
                 Image image = new Image(imageURL.toExternalForm());
