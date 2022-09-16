@@ -12,7 +12,7 @@ import static com.example.app.MyApplication.screenx;
 import static com.example.app.MyApplication.screeny;
 
 public class TestEnemySpawn{
-    static Circle[] enemy = new Circle[100];
+    static List<Circle> enemy = new ArrayList<>();
     static int enemyNum = 0;
     static List<Integer> enemyHp = new ArrayList<>();
     public Node spawnEnemy(){
@@ -24,30 +24,31 @@ public class TestEnemySpawn{
         mousePane.setVisible(true);
         mousePane.setMinSize(screenx, screeny);
         enemyHp.add(100);
-        enemy[enemyNum] = new Circle();
-        enemy[enemyNum].setId("Enemy "  + enemyNum);
-        enemy[enemyNum].setRadius(screenx * 0.008);
-        enemy[enemyNum].setFill(new Color(1.0, 1.0, 1.0, 1.0));
-        enemy[enemyNum].setStrokeWidth(screenx * 0.002);
-        enemy[enemyNum].setStroke(new Color(0.2, 0.2, 0.2, 1.0));
+        Circle enemyC = new Circle();
+        enemy.add(enemyC);
+        enemyC.setId("Enemy "  + enemyNum);
+        enemyC.setRadius(screenx * 0.008);
+        enemyC.setFill(new Color(1.0, 1.0, 1.0, 1.0));
+        enemyC.setStrokeWidth(screenx * 0.002);
+        enemyC.setStroke(new Color(0.2, 0.2, 0.2, 1.0));
         mousePane.setOnMouseMoved(event ->{
             Node source = (Node) event.getSource();
-            if (!Objects.equals(source.getId(), String.valueOf(enemyNum))){
-                enemy[enemyNum].setCenterX(event.getX());
-                enemy[enemyNum].setCenterY(event.getY());
+            if (!Objects.equals(source.getId(), ("Enemy " + enemyNum))){
+                enemyC.setCenterX(event.getX());
+                enemyC.setCenterY(event.getY());
             }
         });
         mousePane.setOnMouseClicked(event -> {
             mousePane.setVisible(false);
             enemyNum++;
         });
-        enemy[enemyNum].setOnMouseClicked(event ->{
+        enemyC.setOnMouseClicked(event ->{
             InformationPane send = new InformationPane();
             Node source = (Node) event.getSource();
             String index = source.getId();
             index = index.replace("Enemy ", "");
             send.returnInformation(source, String.valueOf(enemyHp.get(Integer.parseInt(index))));
         });
-        InGameScreen.minionPane.getChildren().add(enemy[enemyNum]);
+        InGameScreen.minionPane.getChildren().add(enemyC);
     }
 }

@@ -16,9 +16,11 @@ public class InGameScreen {
     static VBox section = new VBox();
     static Pane mousePane = new Pane();
     static Pane minionPane = new Pane();
+    static Pane unitPane = new Pane();
+    static Pane pingPane = new Pane();
     public Node GameScreen(double screenx, double screeny, Circle[] championCircle, List<Image> results, List<String> resultNames){
         Pane gameScreen = new Pane();
-        Pane unitPane = new Pane();
+
         Pane actionPane = new Pane();
 
         InformationPane infoGrabber = new InformationPane();
@@ -38,7 +40,8 @@ public class InGameScreen {
                 assign.endTurn(screenx),
                 interactibles,
                 actionPane,
-                mousePane);
+                mousePane,
+                pingPane);
         mousePane.setVisible(false);
         gameScreen.setMinSize(screenx, screeny);
         return gameScreen;

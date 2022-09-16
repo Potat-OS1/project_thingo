@@ -19,6 +19,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
+import static com.example.app.InGameScreen.pingPane;
+
 public class Units{
     int turnCount;
     static int state = 0;
@@ -26,6 +28,7 @@ public class Units{
     static Circle[] unit = new Circle[teamSize];
     static Circle[] unitMove = new Circle[teamSize];
     static Circle[] threat = new Circle[teamSize];
+    static Circle[] trueThreat = new Circle[teamSize];
     static double coordx = 0.0;
     static double coordy = 0.0;
     TestEnemySpawn tes = new TestEnemySpawn();
@@ -35,6 +38,7 @@ public class Units{
             unit[i] = new Circle();
             unitMove[i] = new Circle();
             threat[i] = new Circle();
+            trueThreat[i] = new Circle();
         }
         buttonLogic(actionPane);
     }
@@ -84,6 +88,11 @@ public class Units{
                     threatRange.setVisible(false);
                 }
             }
+            for (Circle truethreat : trueThreat){
+                truethreat.setVisible(false);
+            }
+            pingPane.getChildren().clear();
+            pingPane.setVisible(false);
             coordx = 0;
             coordy = 0;
     }
@@ -104,9 +113,6 @@ public class Units{
                             threatRange.setOpacity(0.4);
                         }
                     }
-                }
-                else{
-                    System.out.println(" ");
                 }
             });
             Unit.setOnMouseExited(event ->{
@@ -167,8 +173,12 @@ public class Units{
                             unit[f].setCenterY(event.getY());
                             threat[f].setCenterX(unit[f].getCenterX());
                             threat[f].setCenterY(unit[f].getCenterY());
+                            trueThreat[f].setCenterX(unit[f].getCenterX());
+                            trueThreat[f].setCenterY(unit[f].getCenterY());
                             Actions action = new Actions();
-                            action.actionCall(event, move, actionPane, state);
+                            unitMove[f].setVisible(false);
+                            threat[f].setVisible(false);
+                            action.actionCall(event, move, actionPane);
                         }
                     }
                 }
@@ -260,7 +270,13 @@ public class Units{
             threat[i].setCenterY(yCoord.get(i));
             threat[i].setFill(new Color(1.0, 0.0 ,0.5, .25));
             threat[i].setVisible(false);
-            unitPane.getChildren().addAll(threat[i], unitMove[i], unit[i]);
+            trueThreat[i].setId(selectedChamp.get(i) + "'s True Threat Range");
+            trueThreat[i].setRadius(champThreat.get(i) + (screenx * 0.005));
+            trueThreat[i].setFill(new Color(0.0, 0.0, 1.0, 0.25));
+            trueThreat[i].setCenterX(xCoord.get(i));
+            trueThreat[i].setCenterY(yCoord.get(i));
+            trueThreat[i].setVisible(false);
+            unitPane.getChildren().addAll(threat[i], unitMove[i], unit[i], trueThreat[i]);
         }
     }
 }
