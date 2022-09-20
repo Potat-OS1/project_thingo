@@ -1,5 +1,7 @@
-package com.example.app;
+package com.example.app.unitInfo;
 
+import com.example.app.Actions;
+import com.example.app.TestEnemySpawn;
 import javafx.geometry.Pos;
 import javafx.scene.Cursor;
 import javafx.scene.Node;
@@ -25,12 +27,12 @@ public class Units{
     int turnCount;
     static int state = 0;
     static int teamSize = 5;
-    static Circle[] unit = new Circle[teamSize];
-    static Circle[] unitMove = new Circle[teamSize];
-    static Circle[] threat = new Circle[teamSize];
-    static Circle[] trueThreat = new Circle[teamSize];
-    static double coordx = 0.0;
-    static double coordy = 0.0;
+    public static Circle[] unit = new Circle[teamSize];
+    public static Circle[] unitMove = new Circle[teamSize];
+    public static Circle[] threat = new Circle[teamSize];
+    public static Circle[] trueThreat = new Circle[teamSize];
+    public static double coordx = 0.0;
+    public static double coordy = 0.0;
     TestEnemySpawn tes = new TestEnemySpawn();
 
     public void createUnits(Pane actionPane){
@@ -54,12 +56,12 @@ public class Units{
             else{
                 System.out.println(" ");
             }
-            String searchId = "";
+            StringBuilder searchId = new StringBuilder();
             for (int b = 0; b < idIndex; b++){
-                searchId = searchId + id.charAt(b);
+                searchId.append(id.charAt(b));
             }
             for (Circle Unitc : unit) {
-                if (Unitc.getId().contains(searchId)){
+                if (Unitc.getId().contains(searchId.toString())){
                     if (Unitc.getCenterX() != coordx){
                         Unitc.setCenterX(coordx);
                         Unitc.setCenterY(coordy);
@@ -67,7 +69,7 @@ public class Units{
                 }
             }
             for (Circle range : unitMove) {
-                if (range.getId().contains(searchId)){
+                if (range.getId().contains(searchId.toString())){
                     if (range.getCenterX() != coordx){
                         range.setCenterX(coordx);
                         range.setCenterY(coordy);
@@ -78,7 +80,7 @@ public class Units{
                 }
             }
             for (Circle threatRange : threat) {
-                if (threatRange.getId().contains(searchId)){
+                if (threatRange.getId().contains(searchId.toString())){
                     if (threatRange.getCenterX() != coordx){
                         threatRange.setCenterX(coordx);
                         threatRange.setCenterY(coordy);
@@ -231,7 +233,6 @@ public class Units{
         List<Integer> selectedChamp = Arrays.asList(0, 1, 2, 3, 4);
         List<Double> champThreat = Arrays.asList(0.0, 0.0, 0.0, 0.0, 0.0);
         List<Double> champMove = Arrays.asList(0.0, 0.0, 0.0, 0.0, 0.0);
-        List<Integer> champMoney = Arrays.asList(0,0,0,0,0);
         for (int a = 0; a < champCircle.length; a++) {
             try {
                 BufferedReader br = new BufferedReader(new InputStreamReader(Objects.requireNonNull(getClass().getResourceAsStream("/champions/" + champCircle[a].getId() + ".txt"))));

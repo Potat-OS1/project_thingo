@@ -14,7 +14,8 @@ import java.util.Objects;
 
 public class Structures{
     ArrayList<String> structures = new ArrayList<>();
-    ArrayList<Integer> hpInformation = new ArrayList<>();
+    static ArrayList<Integer> structureHp = new ArrayList<>();
+    static ArrayList<Integer> currentStructureHp = new ArrayList<>();
     public void createStructures(double screenx, double screeny, Pane unitPane){
         createTurrets(screenx, screeny, unitPane);
         createInhibitors(screenx, screeny, unitPane);
@@ -151,22 +152,28 @@ public class Structures{
     public void hpSetter(){
         for (String object : structures){
             if(object.startsWith("Nexus Turret ID")){
-                hpInformation.add(100);
+                structureHp.add(100);
+                currentStructureHp.add(100);
             }
             if(object.startsWith("Nexus ID")){
-                hpInformation.add(200);
+                structureHp.add(200);
+                currentStructureHp.add(200);
             }
             if(object.startsWith("Inhibitor Turret ID")){
-                hpInformation.add(120);
+                structureHp.add(120);
+                currentStructureHp.add(120);
             }
             if(object.startsWith("Inhibitor ID")){
-                hpInformation.add(100);
+                structureHp.add(100);
+                currentStructureHp.add(100);
             }
             if(object.startsWith("Tier 2 Turret ID")){
-                hpInformation.add(110);
+                structureHp.add(110);
+                currentStructureHp.add(110);
             }
             if(object.startsWith("Tier 1 Turret ID")){
-                hpInformation.add(100);
+                structureHp.add(100);
+                currentStructureHp.add(100);
             }
         }
     }
@@ -175,8 +182,9 @@ public class Structures{
             inputMod.setOnMousePressed(event -> {
                 InformationPane aaaa = new InformationPane();
                 final Node source = (Node) event.getSource();
-                String hp = String.valueOf(hpInformation.get(structures.indexOf(source.getId())));
-                aaaa.returnInformation(source, hp);
+                int hp = (structureHp.get(structures.indexOf(source.getId())));
+                int currentHp = (structureHp.get(structures.indexOf(source.getId())));
+                aaaa.returnInformation(source, hp, currentHp);
             });
         }
     }

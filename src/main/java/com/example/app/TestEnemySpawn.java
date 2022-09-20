@@ -15,6 +15,7 @@ public class TestEnemySpawn{
     static List<Circle> enemy = new ArrayList<>();
     static int enemyNum = 0;
     static List<Integer> enemyHp = new ArrayList<>();
+    static List<Integer> currentEnemyHp = new ArrayList<>();
     public Node spawnEnemy(){
         Button spawn = new Button("Spawn Enemy");
         spawn.setOnAction(event -> spawnEnemyAnimation());
@@ -24,6 +25,7 @@ public class TestEnemySpawn{
         mousePane.setVisible(true);
         mousePane.setMinSize(screenx, screeny);
         enemyHp.add(100);
+        currentEnemyHp.add(100);
         Circle enemyC = new Circle();
         enemy.add(enemyC);
         enemyC.setId("Enemy "  + enemyNum);
@@ -47,7 +49,7 @@ public class TestEnemySpawn{
             Node source = (Node) event.getSource();
             String index = source.getId();
             index = index.replace("Enemy ", "");
-            send.returnInformation(source, String.valueOf(enemyHp.get(Integer.parseInt(index))));
+            send.returnInformation(source, (enemyHp.get(Integer.parseInt(index))), (currentEnemyHp.get(Integer.parseInt(index))));
         });
         InGameScreen.minionPane.getChildren().add(enemyC);
     }

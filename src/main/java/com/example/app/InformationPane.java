@@ -22,7 +22,7 @@ public class InformationPane{
         section.getChildren().add(oi);
         return infoPane;
     }
-    public void returnInformation(Node input, String hp){
+    public void returnInformation(Node input, int hp, int currentHp){
         VBox info = new VBox();
         Pane hpBox = new Pane();
         Pane namePane = new Pane();
@@ -35,12 +35,20 @@ public class InformationPane{
         Rectangle hpBar = new Rectangle();
         hpBar.setFill(new Color(1.0, 0.0, 0.35, 1.0));
         hpBar.setWidth(screenx * 0.19);
+
+        if (currentHp < hp){
+            double ratio = (double) currentHp / (double) hp;
+            System.out.println(currentHp + "   " + hp + "    " + ratio);
+            hpBar.setWidth((screenx * 0.19) * ratio);
+            System.out.println(hpBar.getWidth());
+        }
+
         hpBar.setHeight(screeny * 0.05);
 
         hpBox.setBackground(Background.fill(new Color(0.1, 0.1, 0.1, 1.0)));
         hpBox.setMaxSize(screenx * 0.189, screeny * 0.05);
 
-        Label hpAmt = new Label(hp);
+        Label hpAmt = new Label(String.valueOf(currentHp));
         hpAmt.setTextFill(new Color(0.0, 0.0, 0.0, 1.0));
         hpAmt.setMinSize(screenx * 0.19, screeny * 0.05);
         hpAmt.setLayoutX(screeny * 0.01);
@@ -66,9 +74,15 @@ public class InformationPane{
         info.getChildren().addAll(namePane, hpBox);
         try{
             section.getChildren().set(0, info);
+            section.getChildren().get(0).setVisible(true);
         }
         catch (Exception exc){
             section.getChildren().add(info);
+            section.getChildren().get(0).setVisible(true);
+        }
+        if (currentHp <= 0){
+            section.getChildren().get(0).setVisible(false);
+            input.setVisible(false);
         }
     }
 }

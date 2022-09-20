@@ -17,7 +17,8 @@ public class Minions {
     ArrayList<Circle> meleeMinion = new ArrayList<>();
     static ArrayList<Pane> minionGroup = new ArrayList<>();
     ArrayList<String> minionList = new ArrayList<>();
-    ArrayList<Integer> HP = new ArrayList<>();
+    ArrayList<Integer> minionHp = new ArrayList<>();
+    ArrayList<Integer> currentMinionHp = new ArrayList<>();
     int index = 0;
     int groupIndex = 0;
     int spawnPosition = 0;
@@ -29,7 +30,8 @@ public class Minions {
                 casterMinion.add(new Circle(screeny * 0.006));
                 casterMinion.get(index).setId("Caster Minion ID no:" + (index));
                 casterMinion.get(index).setFill(new Color(0.0, 1.0, 1.0, 1.0));
-                HP.add(90);
+                minionHp.add(90);
+                currentMinionHp.add(90);
                 minionList.add(casterMinion.get(index).getId());
                 casterMinion.get(index).setOnMousePressed(event -> {
                     final Node source = (Node) event.getSource();
@@ -39,7 +41,8 @@ public class Minions {
                 meleeMinion.add(new Circle(screeny * 0.008));
                 meleeMinion.get(index).setId("Melee Minion ID no: " + (index));
                 meleeMinion.get(index).setFill(new Color(0.0, 0.7, 0.7, 1.0));
-                HP.add(100);
+                minionHp.add(100);
+                currentMinionHp.add(100);
                 minionList.add(meleeMinion.get(index).getId());
                 meleeMinion.get(index).setOnMousePressed(event -> {
                     final Node source = (Node) event.getSource();
@@ -122,7 +125,8 @@ public class Minions {
         }
     }
     public void minionInfo(Node minion){
-        String hp = String.valueOf(HP.get(minionList.indexOf(minion.getId())));
-        sendInfo.returnInformation(minion, hp);
+        int hp = (minionHp.get(minionList.indexOf(minion.getId())));
+        int currentHp = (currentMinionHp.get(minionList.indexOf(minion.getId())));
+        sendInfo.returnInformation(minion, hp, currentHp);
     }
 }
