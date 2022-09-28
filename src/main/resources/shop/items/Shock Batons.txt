@@ -1,0 +1,6 @@
+Shock Batons
+Power
+Bonus Power = 15
+Shock
+"cd 3 turns: stun an enemy"
+non-consumable

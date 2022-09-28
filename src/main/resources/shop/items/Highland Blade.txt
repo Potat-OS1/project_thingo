@@ -1,0 +1,8 @@
+Highland Blade
+Power
+Speed
+Bonus Power = 10
+Bonus Speed = 25%
+Highland
+"the first attack each turn does increased damage"
+non-consumable

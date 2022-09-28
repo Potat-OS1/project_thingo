@@ -1,0 +1,8 @@
+Dead of Winter
+Health
+Defence
+Bonus Health = 100
+Bonus Defence = 20
+Bone Chilling Cold
+"At the end of each turn, if there is an enemy near you, take damage and deal that much to your surroundings. this effect is reduced based on your bAD, bAP, and bAS."
+non-consumable
