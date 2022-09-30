@@ -52,6 +52,7 @@ public class InGameScreen {
                 mousePane,
                 pingPane);
         mousePane.setVisible(false);
+        shopPane.setVisible(false);
         gameScreen.setMinSize(screenx, screeny);
         return gameScreen;
     }

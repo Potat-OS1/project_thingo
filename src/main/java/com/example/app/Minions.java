@@ -22,7 +22,7 @@ public class Minions {
     int index = 0;
     int groupIndex = 0;
     int spawnPosition = 0;
-    int state = 0;
+    int state = 1;
     public void createMinions(Pane minionPane){
         for (int b = 0; b < 3; b++) {
             minionGroup.add(new Pane());

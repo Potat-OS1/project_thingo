@@ -50,6 +50,8 @@ public class GenerateShop {
         shopContainer.setPadding(new Insets(spacing, spacing, spacing, spacing));
 
         itemField.setVisible(false);
+        itemField.setMinHeight(screeny * .3);
+
 
         //hey dumbass do the widgets here the next time you code. it goes on top of itemCategory
         //widgets include targetted Units shops
@@ -66,6 +68,27 @@ public class GenerateShop {
     }
     public Node widgets(){
         Pane widget = new Pane();
+        widget.setPadding(new Insets(spacing, spacing, 0, spacing));
+        List<Rectangle> widgetList = new ArrayList<>();
+        HBox widgetBox = new HBox();
+        for (int i = 0; i < 4; i++){
+            Rectangle topWidget = new Rectangle(screenx * 0.05, screenx * 0.05);
+            topWidget.setId("" + i);
+            widgetList.add(topWidget);
+            widgetBox.getChildren().add(topWidget);
+        }
+        widgetBox.setSpacing(screenx * 0.05);
+        Rectangle exit = new Rectangle(screenx * 0.05, screenx * 0.05);
+        widgetList.add(exit);
+        widget.getChildren().add(exit);
+        exit.setLayoutX(10 * exit.getWidth());
+        widgetList.get(0).setFill(new Color(0.0, 1.0, 0.0, 1.0));
+        widgetList.get(1).setFill(new Color(0.0, 0.9, 0.0, 1.0));
+        widgetList.get(2).setFill(new Color(0.0, 0.8, 0.0, 1.0));
+        widgetList.get(3).setFill(new Color(0.0, 0.7, 0.0, 1.0));
+        widgetList.get(4).setFill(new Color(0.0, 0.6, 0.0, 1.0));
+        widgetList.get(4).setFill(new Color(0.9, 0.0, 0.25, 1.0));
+        widget.getChildren().add(widgetBox);
         return widget;
     }
     public void populateItemFields(){

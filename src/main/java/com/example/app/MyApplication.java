@@ -7,8 +7,8 @@ import javafx.stage.*;
 
 public class MyApplication extends Application {
     // 1280/720  1920/1080
-    public static double screenx = 1920;
-    public static double screeny = 1080;
+    public static double screenx = 1280;
+    public static double screeny = 720;
     static Pane pane = new Pane();
     static Scene scene = new Scene(pane, screenx, screeny);
     @Override
