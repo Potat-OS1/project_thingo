@@ -14,7 +14,6 @@ import java.util.List;
 
 public class InGameScreen {
     Pane interactibles = new Pane();
-    Pane infoPane = new Pane();
     static VBox section = new VBox();
     static Pane mousePane = new Pane();
     static Pane minionPane = new Pane();
@@ -34,14 +33,15 @@ public class InGameScreen {
         shop.shopCreate();
 
         Units assign = new Units();
+        assign.createUnits(actionPane);
+        assign.BaseStatAssign(unitPane, screeny, screenx, championCircle, results, resultNames);
         Minions minionGrabber = new Minions();
         interactibles.getChildren().addAll(
-                infoGrabber.leftInfoPane(infoPane),
+                infoGrabber.LeftInfoPane(),
+                infoGrabber.RightInfoPane(),
                 unitPane);
         unitPane.getChildren().add(minionPane);
         structureGrabber.createStructures(screenx, screeny, unitPane);
-        assign.createUnits(actionPane);
-        assign.BaseStatAssign(unitPane, screeny, screenx, championCircle, results, resultNames);
         minionGrabber.createMinions(minionPane);
 
         gameScreen.getChildren().addAll(createBackGround(screenx, screeny),

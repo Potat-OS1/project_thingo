@@ -14,16 +14,19 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Circle;
-import javafx.scene.shape.Shape;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
 import static com.example.app.InGameScreen.pingPane;
+import static com.example.app.InGameScreen.shopPane;
+import static com.example.app.unitInfo.UnitSpecifics.*;
 
 public class Units{
+    boolean shopToggle = false;
     int turnCount;
     static int state = 0;
     static int teamSize = 5;
@@ -31,6 +34,9 @@ public class Units{
     public static Circle[] unitMove = new Circle[teamSize];
     public static Circle[] threat = new Circle[teamSize];
     public static Circle[] trueThreat = new Circle[teamSize];
+
+    public static List<String> champList = new ArrayList<>();
+
     public static double coordx = 0.0;
     public static double coordy = 0.0;
     TestEnemySpawn tes = new TestEnemySpawn();
@@ -202,47 +208,54 @@ public class Units{
 
         VBox endBtnBox = new VBox();
 
-        endBtnBox.getChildren().addAll(endTurn, tCount, detectionButton(), tes.spawnEnemy());
+        endBtnBox.getChildren().addAll(endTurn, tCount, tes.spawnEnemy());
         endBtnBox.setMinWidth(screenx * .05);
         endBtnBox.setMaxWidth(screenx * .05);
         tCount.setAlignment(Pos.CENTER);
         tCount.setMaxWidth(Double.MAX_VALUE);
         tCount.setTextFill(Color.WHITE);
         endBtnBox.setLayoutX(screenx * .95);
-        return endBtnBox;
-    }
-    public Node detectionButton(){
-        Button detection = new Button("detect");
-        detection.setOnAction(event -> {
-            for (int a = 0; a < unit.length; a++){
-                Shape u1Intersect = Shape.intersect(threat[0], unit[a]);
-                if (u1Intersect.getBoundsInLocal().getWidth() != -1 && unit[a] != unit[0]){
-                    System.out.println("Hi " + unit[a].getId() + " in " + unit[0].getId() +  "'s range");
-                }
-                Shape u2Intersect = Shape.intersect(threat[1], unit[a]);
-                if (u2Intersect.getBoundsInLocal().getWidth() != -1 && unit[a] != unit[1]){
-                    System.out.println("Hi " + unit[a].getId() + " in " + unit[1].getId() +  "'s range");
-                }
-            }
+
+        Button toggleShop = new Button("Toggle Shop");
+        toggleShop.setOnAction(actionEvent -> {
+            shopToggle = !shopToggle;
+            shopPane.setVisible(shopToggle);
         });
-        return detection;
+        toggleShop.setMinWidth(screenx * .05);
+        toggleShop.setMaxWidth(screenx * .05);
+        toggleShop.setAlignment(Pos.CENTER);
+        toggleShop.setTextFill(Color.BLACK);
+        endBtnBox.getChildren().add(toggleShop);
+
+        return endBtnBox;
     }
 
     public void BaseStatAssign(Pane unitPane, Double screeny, Double screenx, Circle[] champCircle, List<Image> results, List<String> resultNames){
-        List<String> champList = Arrays.asList((champCircle[0].getId() + " unit 1"), (champCircle[1].getId() + " unit 2"), (champCircle[2].getId() + " unit 3"), (champCircle[3].getId() + " unit 4"), (champCircle[4].getId() + " unit 5"));
-        List<Integer> selectedChamp = Arrays.asList(0, 1, 2, 3, 4);
+        int y = 1;
+        for (Circle champC : champCircle){
+            champList.add((champC.getId() + " unit " + y));
+            champMoney.set(y - 1, 500);
+            y++;
+        }
         List<Double> champThreat = Arrays.asList(0.0, 0.0, 0.0, 0.0, 0.0);
         List<Double> champMove = Arrays.asList(0.0, 0.0, 0.0, 0.0, 0.0);
         for (int a = 0; a < champCircle.length; a++) {
             try {
                 BufferedReader br = new BufferedReader(new InputStreamReader(Objects.requireNonNull(getClass().getResourceAsStream("/champions/" + champCircle[a].getId() + ".txt"))));
                 String line;
+                UnitStatsAssign usa = new UnitStatsAssign();
                 while ((line = br.readLine()) != null) {
                     if (line.contains("range")) {
                         champThreat.set(a, (screeny * Double.parseDouble(line.replace("range ", ""))));
                     }
                     if (line.contains("move")){
                         champMove.set(a, (screeny * Double.parseDouble(line.replace("move ", ""))));
+                    }
+                    if (line.contains("HP")){
+                        usa.stat(line, a, hpLists);
+                    }
+                    if (line.contains("AD")){
+                        usa.stat(line, a, adLists);
                     }
                 }
             } catch (Exception exc) {
@@ -252,12 +265,12 @@ public class Units{
         List<Double> xCoord = Arrays.asList(screenx * .215, screenx * .226, screenx * .236, screenx * .245, screenx * .25);
         List<Double> yCoord = Arrays.asList(screeny * .9, screeny * .903, screeny * .91, screeny * .922, screeny * .94);
         for (int i = 0; i < unit.length; i++){
-            unit[i].setId(champList.get(selectedChamp.get(i)));
+            unit[i].setId(champList.get(i));
             unit[i].setCenterX(xCoord.get(i));
             unit[i].setCenterY(yCoord.get(i));
             unit[i].setFill(new ImagePattern(results.get(resultNames.indexOf(champCircle[i].getId() + ".png"))));
             unit[i].setRadius(screeny * .01);
-            unitMove[i].setId(champList.get(selectedChamp.get(i)) + "'s Movement Range");
+            unitMove[i].setId(champList.get(i) + "'s Movement Range");
             unitMove[i].setRadius(champMove.get(i));
             unitMove[i].setCenterX(xCoord.get(i));
             unitMove[i].setCenterY(yCoord.get(i));
@@ -265,13 +278,13 @@ public class Units{
             unitMove[i].setStrokeWidth(3.0);
             unitMove[i].setFill(Color.TRANSPARENT);
             unitMove[i].setVisible(false);
-            threat[i].setId(champList.get(selectedChamp.get(i)) + "'s Threat Range");
+            threat[i].setId(champList.get(i) + "'s Threat Range");
             threat[i].setRadius(champThreat.get(i));
             threat[i].setCenterX(xCoord.get(i));
             threat[i].setCenterY(yCoord.get(i));
             threat[i].setFill(new Color(1.0, 0.0 ,0.5, .25));
             threat[i].setVisible(false);
-            trueThreat[i].setId(selectedChamp.get(i) + "'s True Threat Range");
+            trueThreat[i].setId(i + "'s True Threat Range");
             trueThreat[i].setRadius(champThreat.get(i) + (screenx * 0.005));
             trueThreat[i].setFill(new Color(0.0, 0.0, 1.0, 0.25));
             trueThreat[i].setCenterX(xCoord.get(i));

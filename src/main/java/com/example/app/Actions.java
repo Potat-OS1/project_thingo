@@ -122,7 +122,7 @@ public class Actions{
     }
     public void generateAttackOption(Node target, int index, Circle unit){
         Circle location = new Circle();
-        location.setRadius(unit.getRadius());
+        location.setRadius(unit.getRadius()/2);
         location.setFill(new Color(1.0, 0.0, 0.0, 1.0));
         location.setLayoutX(target.getBoundsInLocal().getCenterX());
         location.setLayoutY(target.getBoundsInLocal().getCenterY());

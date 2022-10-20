@@ -1,2 +1,9 @@
-range .06
-move .07
+RANGE .06
+MOVE .07
+HP 70
+AD 10
+AP 0
+ARMOR 15
+MR 15
+AS 1.0
+break

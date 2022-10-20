@@ -71,15 +71,16 @@ public class GenerateShop {
         widget.setPadding(new Insets(spacing, spacing, 0, spacing));
         List<Rectangle> widgetList = new ArrayList<>();
         HBox widgetBox = new HBox();
-        for (int i = 0; i < 4; i++){
-            Rectangle topWidget = new Rectangle(screenx * 0.05, screenx * 0.05);
+        for (int i = 0; i < 5; i++){
+            Rectangle topWidget = new Rectangle(screenx * 0.08, screenx * 0.05);
             topWidget.setId("" + i);
             widgetList.add(topWidget);
             widgetBox.getChildren().add(topWidget);
         }
-        widgetBox.setSpacing(screenx * 0.05);
+        widgetBox.setSpacing(screenx * 0.01);
         Rectangle exit = new Rectangle(screenx * 0.05, screenx * 0.05);
         widgetList.add(exit);
+        System.out.println(widgetList.size());
         widget.getChildren().add(exit);
         exit.setLayoutX(10 * exit.getWidth());
         widgetList.get(0).setFill(new Color(0.0, 1.0, 0.0, 1.0));
@@ -87,7 +88,7 @@ public class GenerateShop {
         widgetList.get(2).setFill(new Color(0.0, 0.8, 0.0, 1.0));
         widgetList.get(3).setFill(new Color(0.0, 0.7, 0.0, 1.0));
         widgetList.get(4).setFill(new Color(0.0, 0.6, 0.0, 1.0));
-        widgetList.get(4).setFill(new Color(0.9, 0.0, 0.25, 1.0));
+        widgetList.get(5).setFill(new Color(0.9, 0.0, 0.25, 1.0));
         widget.getChildren().add(widgetBox);
         return widget;
     }
@@ -170,7 +171,6 @@ public class GenerateShop {
                 tile.setOnMouseClicked(event ->{
                     Node source = (Node) event.getSource();
                     selectedTab = source.getId();
-                    System.out.println(selectedTab);
                     switch(source.getId()){
                         case "Power" -> System.out.println("There is " + powerItems.size() + " items in the Power category");
                         case "Magic" -> System.out.println("There is " + magicItems.size() + " items in the Magic category");
