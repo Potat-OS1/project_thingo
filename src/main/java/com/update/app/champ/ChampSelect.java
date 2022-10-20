@@ -91,7 +91,6 @@ public class ChampSelect {
         selectIncrement =  ((useableY * .41)/5) + ((useableY * 0.05) / 1.75) + (selectOffset * 3);
 
         championCircles.setLayoutX(useableX / 4);
-        //championCircles.setBackground(new Background(new BackgroundFill(color, null, null)));
         selectedChampions.getChildren().addAll(background);
         return selectedChampions;
     }

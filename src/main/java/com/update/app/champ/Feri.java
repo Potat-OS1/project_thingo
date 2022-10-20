@@ -6,7 +6,7 @@ public class Feri {
         return desc;
     }
     public String ultiDescription(){
-        String desc = "Passive: Feri's basic ability scales with Attack Speed \nActive: Feri's basic ability width and length is increased.";
+        String desc = "Passive: Feri's basic ability scales with Attack Speed Active: Feri's basic ability width and length is increased.";
         return desc;
     }
 }

@@ -6,10 +6,12 @@ import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
 import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
+import javafx.scene.text.TextFlow;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -145,19 +147,17 @@ public class ChampSelectData {
         HBox container = new HBox(ability1, region, ability2);
         container.setMaxWidth(rightPaneWidth - (rightPaneWidth / 6));
 
-        Text ability = new Text();
+        TextFlow ability = new TextFlow();
         ability.setVisible(false);
 
         ability1.setOnMouseClicked(event-> {
             if (ability1toggle) {
                 ability.setVisible(true);
-//                String string = descriptionGetter("basicDescription");
-//                if (string.contains("Passive: ")){
-//                    string = string.replace("Passive: ", "");
-//                }
-                ability.setText(descriptionGetter("basicDescription"));
+                String string = descriptionGetter("basicDescription");
+                abilityTextFormatter(string, ability);
                 ability1toggle = false;
             } else {
+                ability2toggle = true;
                 ability1toggle = true;
                 ability.setVisible(false);
             }
@@ -166,18 +166,37 @@ public class ChampSelectData {
         ability2.setOnMouseClicked(event-> {
             if (ability2toggle) {
                 ability.setVisible(true);
-                ability.setText(descriptionGetter("ultiDescription"));
+                String string = descriptionGetter("ultiDescription");
+                abilityTextFormatter(string, ability);
                 ability2toggle = false;
             } else {
                 ability2toggle = true;
+                ability1toggle = true;
                 ability.setVisible(false);
             }
         });
-
-        ability.setWrappingWidth(rightPaneWidth - (rightPaneWidth / 6));
-        ability.setFont(new Font("Arial", rightPaneWidth /22));
         pane.getChildren().addAll(container, ability);
         return pane;
+    }
+    public void abilityTextFormatter(String abilityDesc, TextFlow ability){
+        List<String> stringArray = Arrays.asList(abilityDesc.split("\\s+"));
+        ability.getChildren().clear();
+        boolean linebreak = stringArray.contains("Passive:") && stringArray.contains("Active:");
+        for(String word: stringArray){
+            Text text = new Text(word + " ");
+            switch(word){
+                case("Passive:")->text.setFill(Color.BLUE);
+                case("Active:")->{
+                    if(linebreak){
+                        ability.getChildren().add(new Text(System.lineSeparator()));
+                    }
+                    text.setFill(Color.RED);
+                }
+                default->text.setFill(Color.GRAY);
+            }
+            text.setFont(new Font("Arial", rightPaneWidth /22));
+            ability.getChildren().add(text);
+        }
     }
     public String descriptionGetter(String ability){
         String description = "";
