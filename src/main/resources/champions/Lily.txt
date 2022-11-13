@@ -1,0 +1,9 @@
+RANGE .08
+MOVE .05
+HP 150
+AD 10
+AP 10
+ARMOR 5
+MR 5
+AS 0.25
+break

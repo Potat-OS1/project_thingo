@@ -99,7 +99,7 @@ public class LaunchApp extends Application {
                 }
                 case ("1920x1080") -> {
                     x = 1920;
-                    y = 1090;
+                    y = 1080;
                 }
             }
             ChampSelect next = new ChampSelect();

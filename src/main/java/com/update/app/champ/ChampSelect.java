@@ -1,6 +1,8 @@
 package com.update.app.champ;
 
 import com.update.app.SceneSwitcher;
+import com.update.app.champ.information.Stats;
+import com.update.app.champ.ingame.GameStart;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
@@ -41,6 +43,7 @@ public class ChampSelect {
         return scene;
     }
     public Node topWidgets(){
+        //top row of icons in champ select
         HBox widgetsBox = new HBox();
         Rectangle exit = new Rectangle(screenx * 0.05, screenx * 0.05);
         Rectangle whitespace = new Rectangle(screenx * .95, screenx * 0.05);
@@ -52,6 +55,7 @@ public class ChampSelect {
         return widgetsBox;
     }
     public Node hbox(){
+        //builds the scene below the widget bar
         HBox sceneDiv = new HBox();
         sceneDiv.getChildren().addAll(buildLeftPane(), buildCenterPane(), buildRightPane());
         return sceneDiv;
@@ -70,6 +74,7 @@ public class ChampSelect {
         VBox championCircles = new VBox();
         Pane highlight = new Pane();
 
+        //circles on the left in champ select screen
         championCircles.setAlignment(Pos.CENTER);
         championCircles.maxWidth(useableX);
         championCircles.setPadding(new Insets((useableY * 0.05) / 6, (useableY * 0.05) / 6, (useableY * 0.05) / 6, (useableY * 0.05) / 6));
@@ -82,6 +87,8 @@ public class ChampSelect {
             championCircle.add(championC);
         }
         background.getChildren().addAll(highlight, championCircles);
+
+        //rectangle behind the cirlce to highlight which circle is highlighted
         select = new Rectangle((useableY * 0.4), (useableY * 0.4)/2.1);
         highlight.getChildren().add(select);
         select.setLayoutX(useableX * 0.45 - (((useableY * 0.4)/2.5) / 2));
@@ -95,6 +102,7 @@ public class ChampSelect {
         return selectedChampions;
     }
     public Node buildRightPane(){
+        //datapane on the right
         double useableX = screenx * .3;
         double useableY = screeny - (screenx * 0.05);
         rightPaneWidth = useableX;
@@ -105,6 +113,7 @@ public class ChampSelect {
         return right;
     }
     public Node buildCenterPane(){
+        //center holding all the champions
         double useableX = screenx * .5;
         double useableY = screeny - (screenx * 0.05);
         StackPane center = new StackPane();
@@ -113,6 +122,7 @@ public class ChampSelect {
         center.setMaxSize(useableX, useableY);
         center.setMinSize(useableX, useableY);
 
+        //scrollpane such
         champions.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
         champions.setStyle("-fx-background:black;"+"-fx-border-color:black;" + "-fx-focus-color:transparent;");
         champions.setMinSize(useableX - (useableY * 0.02), useableY - (useableY * 0.2));
@@ -122,6 +132,8 @@ public class ChampSelect {
         VBox vbox = new VBox();
         vbox.getChildren().add(champions);
         center.getChildren().add(pane);
+
+        //lockin button
         Polygon lockin = new Polygon();
         lockin.getPoints().addAll(0.0, 0.0,
                 20.0, -10.0,
@@ -136,18 +148,27 @@ public class ChampSelect {
         lockin.setFill(color);
         lockin.setOnMouseClicked(event ->{
             ChampSelectData csd = new ChampSelectData();
-            csd.setIcon();
-            if(ChampSelectData.selectedChampion != null && selectedSlot <= 4){
-                select.setLayoutY(championCircle.get(selectedSlot).getLayoutY() - (select.getHeight() / 2));
+            if(selectedSlot < 5){
+                csd.setIcon();
+                if(ChampSelectData.selectedChampion != null && selectedSlot <= 4){
+                    select.setLayoutY(championCircle.get(selectedSlot).getLayoutY() - (select.getHeight() / 2));
+                }
             }
-            if (selectedSlot == 5){
+            if(selectedSlot == 5){
+                System.out.println("oi");
                 //start the game here dumbass
                 for (Node circle : championCircle){
-                    csd.storeList(csd.championInformation(circle.getId()));
+                    Stats stat = new Stats();
+                    stat.storeStats(csd.championInformation(circle.getId()));
                 }
+                GameStart gs = new GameStart();
+                gs.Construct();
+                SceneSwitcher.changeScene(2);
             }
 
         });
+
+        //undo button
         Circle undo = new Circle(screenx * 0.025);
         undo.setFill(color);
         vbox.getChildren().add(lockin);
