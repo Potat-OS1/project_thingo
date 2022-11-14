@@ -1,8 +1,8 @@
-package com.update.app.champ;
+package com.update.app.champselect;
 
 import com.update.app.SceneSwitcher;
 import com.update.app.champ.information.Stats;
-import com.update.app.champ.ingame.GameStart;
+import com.update.app.ingame.GameLogic;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
@@ -28,7 +28,9 @@ public class ChampSelect {
     double selectIncrement;
     Color color = new Color(0.1, 0.1, 0.1, 1.0);
     public static Color color2 = new Color(0.05, 0.05, 0.05, 1.0);
+
     public static StackPane right = new StackPane();
+
     public Node MainScreen(int x, int y){
         Pane scene = new Pane();
         screenx = x;
@@ -152,6 +154,8 @@ public class ChampSelect {
                 csd.setIcon();
                 if(ChampSelectData.selectedChampion != null && selectedSlot <= 4){
                     select.setLayoutY(championCircle.get(selectedSlot).getLayoutY() - (select.getHeight() / 2));
+                    ChampSelectData.selectedChampion = null;
+                    right.getChildren().clear();
                 }
             }
             if(selectedSlot == 5){
@@ -161,8 +165,8 @@ public class ChampSelect {
                     Stats stat = new Stats();
                     stat.storeStats(csd.championInformation(circle.getId()));
                 }
-                GameStart gs = new GameStart();
-                gs.Construct();
+                GameLogic gl = new GameLogic();
+                gl.run();
                 SceneSwitcher.changeScene(2);
             }
 

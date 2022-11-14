@@ -1,6 +1,6 @@
 package com.update.app;
 
-import com.update.app.champ.ChampSelect;
+import com.update.app.champselect.ChampSelect;
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;

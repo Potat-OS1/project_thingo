@@ -1,4 +1,4 @@
-package com.update.app.champ;
+package com.update.app.champselect;
 
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -23,7 +23,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
-import static com.update.app.champ.ChampSelect.*;
+import static com.update.app.champselect.ChampSelect.*;
 
 public class ChampSelectData {
     public static List<ImagePattern> champIcons = new ArrayList<>();
@@ -101,42 +101,53 @@ public class ChampSelectData {
     }
     public void setIcon(){
         //this advances the selected slot and it sets the circle on the left to whatever was locked in.
-        for (String listname : championNames){
-            if (listname.contains(selectedChampion)){
-                ChampSelect.championCircle.get(selectedSlot).setFill(champIcons.get(championNames.indexOf(listname)));
-                selectedSlot++;
+        if (selectedChampion != null) {
+            for (String listname : championNames) {
+                if (listname.contains(selectedChampion)) {
+                    ChampSelect.championCircle.get(selectedSlot).setFill(champIcons.get(championNames.indexOf(listname)));
+                    selectedSlot++;
+                }
             }
         }
     }
     public void champInformation(){
         //clear the children of the right pane so that when you switch between hovered champions, you won't keep their information on it.
         right.getChildren().clear();
+
         //build the right pane information again.
         Label name = new Label(selectedChampion);
         name.setFont(new Font("Arial", rightPaneWidth / 10));
+
         //
         StackPane spane = new StackPane(name);
         spane.setBorder(new Border(new BorderStroke(null, null, color2, null, null, null, BorderStrokeStyle.SOLID, null, null, new BorderWidths(rightPaneWidth / 75), null)));
+
         //column 1 of the stats, aka the stat names.
         VBox column1 = new VBox();
         column1.setAlignment(Pos.CENTER);
         column1.setBorder(new Border(new BorderStroke(null, color2, null, null, null, BorderStrokeStyle.DOTTED, null, BorderStrokeStyle.NONE, null, new BorderWidths(rightPaneWidth / 75), null)));
         column1.setMinWidth(rightPaneWidth / 2.37);
+
         //column 2 of the stats, the actual values of them.
         VBox column2 = new VBox();
         column2.setAlignment(Pos.CENTER);
         column2.setMinWidth(rightPaneWidth / 3);
+
         //container for columns
         HBox hbox = new HBox(column1, column2);
+
         //container for everything so far.
         VBox vbox = new VBox(spane, hbox);
         vbox.setPadding(new Insets(0, rightPaneWidth / 12, rightPaneWidth / 12, rightPaneWidth / 12));
         vbox.setMaxWidth(rightPaneWidth);
         right.getChildren().add(vbox);
+
         //now to actually populate the columns
         List<String> stats = Arrays.asList( "Move Speed", "Range", "Health", "Attack Damage", "Ability Power", "Armor", "Magic Resistance", "Attack Speed");
+
         //this list contains the stats of the champion thats selected
         List<List<String>> temp = championInformation(selectedChampion);
+
         int i = 0;
         for(String stat : stats){
             Label statLabel = new Label(stat);
@@ -167,6 +178,7 @@ public class ChampSelectData {
         TextFlow ability = new TextFlow();
         ability.setVisible(false);
 
+        //toggles for visibility of Ability 1 and Ability 2 descriptions
         ability1.setOnMouseClicked(event-> {
             if (ability1toggle) {
                 ability.setVisible(true);
@@ -204,12 +216,15 @@ public class ChampSelectData {
         ability.getChildren().clear();
         boolean nameColor = false;
         for(String word: stringArray){
+
             //see if it needs to be colored a different color
             if(word.contains("COLOR")){
                 word = word.replace("COLOR", "");
                 nameColor = true;
             }
             Text text = new Text(word + " ");
+
+            //sets word colors.
             switch(word){
                 case("Passive:")->{
                     text.setFill(Color.ROYALBLUE);
@@ -222,6 +237,7 @@ public class ChampSelectData {
                     text.setFont(new Font("Arial", rightPaneWidth /22));
                 }
                 case("BREAKLINE")->ability.getChildren().add(new Text(System.lineSeparator()));
+                //outside of passive, active and breakline, theres two default colors. if nameColor is true, make it the color for titles.
                 default->{
                     if (nameColor){
                         text.setFill(Color.DARKGOLDENROD);
@@ -264,7 +280,7 @@ public class ChampSelectData {
         nameField.add("NAME");
         nameField.add(name);
         champion.add(nameField);
-        //ugly but it works, it grabs the champions data and puts it into a list.
+        //ugly but it works, it grabs the champions data and puts it into a list. i wanted to use a switch statement.
         while(true){
             try {
                 if (((line = br.readLine()) != null)){
