@@ -12,7 +12,6 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
